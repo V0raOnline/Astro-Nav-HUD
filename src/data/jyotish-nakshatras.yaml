@@ -1,0 +1,194 @@
+# Jyotish - 27 Nakshatras (mansiones lunares)
+# Fuentes: Brihat Parashara Hora Shastra, Muhurta Chintamani, 
+#          Brihat Samhita (Varahamihira)
+# Cada nakshatra abarca 13°20' del zodíaco sidéreo
+# Se incluye: señor planetario (para Vimshottari Dasha), deidad, símbolo
+
+Ashwini:
+  lord: Ketu
+  deidad: Ashwins (gemelos divinos)
+  simbolo: Cabeza de caballo
+  keywords: "Velocidad · Sanación · Iniciación"
+  description: "Primera nakshatra. Los gemelos divinos del amanecer, sanadores cósmicos. Energía rápida que inicia y cura."
+
+Bharani:
+  lord: Venus
+  deidad: Yama (dios de la muerte)
+  simbolo: Yoni (útero)
+  keywords: "Contención · Transformación · Carga vital"
+  description: "Porta la carga de lo que nace y muere. Capacidad de contener fuerzas extremas — creación y destrucción a la vez."
+
+Krittika:
+  lord: Sol
+  deidad: Agni (fuego sagrado)
+  simbolo: Cuchillo o llama
+  keywords: "Fuego purificador · Corte · Determinación"
+  description: "Las Pléyades como espadas de fuego. Quema lo impuro para revelar la esencia. Determinación que no cede."
+
+Rohini:
+  lord: Luna
+  deidad: Brahma (creador)
+  simbolo: Carreta o templo
+  keywords: "Fertilidad · Belleza · Crecimiento natural"
+  description: "La más favorecida de la Luna. Creatividad que florece con abundancia natural, belleza que atrae sin esfuerzo."
+
+Mrigashira:
+  lord: Marte
+  deidad: Soma (dios lunar)
+  simbolo: Cabeza de ciervo
+  keywords: "Búsqueda · Sensibilidad fina · Inquietud"
+  description: "El ciervo que busca sin descanso. Mente delicada que explora sin cesar — percepción aguda, nunca satisfecha."
+
+Ardra:
+  lord: Rahu
+  deidad: Rudra (tormenta)
+  simbolo: Lágrima o diamante
+  keywords: "Tormenta · Renovación · Ruptura necesaria"
+  description: "La estrella de la tormenta. Destruye estructuras caducas para crear espacio — transformación sin anestesia."
+
+Punarvasu:
+  lord: Júpiter
+  deidad: Aditi (madre de los dioses)
+  simbolo: Aljaba con flechas
+  keywords: "Retorno · Renovación · Bondad"
+  description: "El arco que vuelve a casa. Recuperación tras la adversidad, capacidad de empezar de nuevo con sabiduría."
+
+Pushya:
+  lord: Saturno
+  deidad: Brihaspati (preceptor divino)
+  simbolo: Flor de loto o ubre
+  keywords: "Nutrición · Protección · Auspicio"
+  description: "Considerada la nakshatra más auspiciosa. Nutre, sostiene y da sin calcular — el maestro que cuida al discípulo."
+
+Ashlesha:
+  lord: Mercurio
+  deidad: Nagas (serpientes divinas)
+  simbolo: Serpiente enroscada
+  keywords: "Penetración · Kundalini · Percepción profunda"
+  description: "La serpiente que abraza y penetra. Percepción que llega al núcleo de las cosas — puede sanar o intoxicar."
+
+Magha:
+  lord: Ketu
+  deidad: Pitris (ancestros divinos)
+  simbolo: Sala del trono
+  keywords: "Trono ancestral · Autoridad innata · Linaje"
+  description: "La sala del trono vacío. Autoridad que no se toma — se reconoce. Conexión con el poder del linaje y los ancestros."
+
+Purva_Phalguni:
+  lord: Venus
+  deidad: Bhaga (dios de la prosperidad)
+  simbolo: Hamaca o patas de cama
+  keywords: "Placer · Creatividad · Descanso fértil"
+  description: "El descanso como acto sagrado. Gozo de la vida, creatividad que fluye desde el disfrute, no desde el esfuerzo."
+
+Uttara_Phalguni:
+  lord: Sol
+  deidad: Aryaman (dios de contratos)
+  simbolo: Cama o patas traseras de cama
+  keywords: "Patronazgo · Generosidad estructurada · Contrato"
+  description: "Da con estructura y recibe con dignidad. El mecenas que sostiene sin perder autoridad propia."
+
+Hasta:
+  lord: Luna
+  deidad: Savitar (sol creador)
+  simbolo: Mano abierta
+  keywords: "Destreza · Manifestación · Habilidad"
+  description: "La mano que hace. Capacidad de materializar con precisión lo que la mente concibe — artesanía sagrada."
+
+Chitra:
+  lord: Marte
+  deidad: Vishvakarma (artesano divino)
+  simbolo: Perla brillante
+  keywords: "Brillo · Arte · Arquitectura de la forma"
+  description: "La estrella brillante del artesano divino. Belleza estructurada con precisión — forma que expresa esencia."
+
+Swati:
+  lord: Rahu
+  deidad: Vayu (dios del viento)
+  simbolo: Brote de hierba en el viento
+  keywords: "Independencia · Flexibilidad · Adaptación"
+  description: "El brote que se dobla en el viento sin romperse. Independencia que se adapta sin perder su naturaleza."
+
+Vishakha:
+  lord: Júpiter
+  deidad: Indra y Agni
+  simbolo: Arco triunfal o bifurcación
+  keywords: "Propósito · Determinación · Meta única"
+  description: "Energía concentrada hacia un objetivo a largo plazo. No descansa hasta alcanzar lo que se propone."
+
+Anuradha:
+  lord: Saturno
+  deidad: Mitra (dios de la amistad)
+  simbolo: Flor de loto
+  keywords: "Devoción · Amistad profunda · Éxito en lo lejano"
+  description: "La estrella de la amistad y la devoción. Lealtad que atraviesa distancias y el tiempo sin desgastarse."
+
+Jyeshtha:
+  lord: Mercurio
+  deidad: Indra (rey de los dioses)
+  simbolo: Pendiente o paraguas real
+  keywords: "Madurez · Liderazgo · Protección de los menores"
+  description: "La mayor entre las estrellas. Responsabilidad del que ha vivido suficiente para proteger a los que vienen detrás."
+
+Mula:
+  lord: Ketu
+  deidad: Nirriti (diosa de la disolución)
+  simbolo: Raíces atadas
+  keywords: "Raíz · Disolución necesaria · Centro galáctico"
+  description: "Apunta al centro de la galaxia. Desintegra para llegar a la raíz de todo — no destruye por destruir sino para revelar."
+
+Purva_Ashadha:
+  lord: Venus
+  deidad: Apas (diosas del agua)
+  simbolo: Abanico o colmillo de elefante
+  keywords: "Purificación · Invencibilidad · Preparación"
+  description: "La que purifica antes de la victoria. Limpia, fortalece y prepara el terreno — la batalla comienza ya ganada."
+
+Uttara_Ashadha:
+  lord: Sol
+  deidad: Vishvedevas (dioses universales)
+  simbolo: Colmillo de elefante
+  keywords: "Victoria universal · Integridad · Permanencia"
+  description: "Victoria que se construye sobre principios sólidos. Lo que logra aquí dura — no hay victoria a medias."
+
+Shravana:
+  lord: Luna
+  deidad: Vishnu (preservador)
+  simbolo: Oreja o tres huellas
+  keywords: "Escucha · Aprendizaje · Conexión"
+  description: "La nakshatra del oído que recibe. La sabiduría llega a través de escuchar — enseña conectando lo separado."
+
+Dhanishtha:
+  lord: Marte
+  deidad: Ashtas Vasus (dioses de la abundancia)
+  simbolo: Tambor o flauta
+  keywords: "Abundancia · Ritmo · Prosperidad musical"
+  description: "La flauta de Krishna. Prosperidad que fluye con el ritmo del cosmos — no se fuerza, se sintoniza."
+
+Shatabhisha:
+  lord: Rahu
+  deidad: Varuna (dios de las aguas cósmicas)
+  simbolo: Círculo vacío o cien estrellas
+  keywords: "Sanación oculta · Misterio · Soledad fértil"
+  description: "Los cien médicos. Sana desde el conocimiento que no se exhibe — la curación más profunda opera en silencio."
+
+Purva_Bhadrapada:
+  lord: Júpiter
+  deidad: Aja Ekapada (dios del fuego)
+  simbolo: Espada o dos caras
+  keywords: "Fuego transformador · Visión dual · Radicalidad"
+  description: "El hombre de dos caras que ve ambos lados antes de actuar. Transformación intensa que no da marcha atrás."
+
+Uttara_Bhadrapada:
+  lord: Saturno
+  deidad: Ahir Budhnya (serpiente de las profundidades)
+  simbolo: Serpiente gemelar
+  keywords: "Profundidad · Sabiduría de las aguas · Lluvia"
+  description: "La serpiente de las aguas profundas. Sabiduría que emerge de lo más oscuro — lenta, sólida, permanente."
+
+Revati:
+  lord: Mercurio
+  deidad: Pushan (pastor divino)
+  simbolo: Pez o tambor
+  keywords: "Tránsito · Protección · Final del ciclo"
+  description: "El pastor que guía al rebaño al final del camino. Cuida el paso hacia el nuevo ciclo — cierre que es umbral."

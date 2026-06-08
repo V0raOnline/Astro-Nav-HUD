@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASTRO-NAV HUD v0.4</title>
+<script src="src/lib/astronomy.browser.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+  :root {
+    --bg:#080a0e;--bg2:#0d1117;--bg3:#111820;
+    --amber:#d4860a;--amber-bright:#f0a020;--amber-dim:#7a4d08;--amber-faint:#1a1005;
+    --cyan-bright:#2abcd4;--text:#c8922a;--text-dim:#7a5518;--text-bright:#f0b030;
+    --border:#2a1f08;--border-bright:#4a3510;
+    --mono:'Share Tech Mono',monospace;--sans:'Exo 2',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;overflow-x:hidden;}
+  canvas.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;}
+  .scan-line{position:fixed;top:0;left:0;width:100%;height:2px;background:linear-gradient(to right,transparent,rgba(212,134,10,0.3),transparent);z-index:2;animation:scan 8s linear infinite;pointer-events:none;}
+  @keyframes scan{0%{top:0;opacity:0}5%{opacity:1}95%{opacity:1}100%{top:100vh;opacity:0}}
+  .container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:1.5rem;}
+  header{border-bottom:1px solid var(--border-bright);padding-bottom:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;}
+  .system-id{font-family:var(--sans);font-weight:300;font-size:11px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;}
+  .system-title{font-family:var(--mono);font-size:22px;color:var(--amber-bright);letter-spacing:0.15em;line-height:1;}
+  .coords{text-align:right;font-size:11px;color:var(--text-dim);line-height:1.8;}
+  .coords span{color:var(--amber);}
+  .input-bar{background:var(--bg3);border:1px solid var(--border-bright);padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;}
+  .input-field{display:flex;gap:0.5rem;align-items:center;}
+  .input-field label{color:var(--text-dim);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;}
+  .input-field input{background:var(--bg);border:1px solid var(--border-bright);color:var(--amber-bright);font-family:var(--mono);font-size:12px;padding:4px 8px;width:120px;outline:none;}
+  .input-field input:focus{border-color:var(--amber);}
+  .calc-btn{background:var(--amber-faint);border:1px solid var(--amber);color:var(--amber-bright);font-family:var(--mono);font-size:11px;padding:5px 16px;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.2s;margin-left:auto;}
+  .calc-btn:hover{background:var(--amber-dim);}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border-bright);}
+  .column{background:var(--bg2);display:flex;flex-direction:column;}
+  .col-header{background:var(--bg3);border-bottom:1px solid var(--border-bright);padding:0.75rem 1rem;display:flex;align-items:center;gap:12px;}
+  .col-header-text{flex:1;}
+  .col-system{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:2px;}
+  .col-title{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--amber-bright);letter-spacing:0.05em;}
+  .col-origin{font-size:10px;color:var(--text-dim);margin-top:2px;}
+  .col-icon{flex-shrink:0;opacity:0.9;}
+  .col-body{padding:1rem;flex:1;}
+  .data-block{margin-bottom:1.25rem;}
+  .data-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:3px;}
+  .data-main{font-size:18px;color:var(--amber-bright);letter-spacing:0.05em;line-height:1.1;}
+  .data-main .number{font-size:28px;color:var(--text-bright);}
+  .data-sub{font-size:12px;color:var(--text-dim);margin-top:2px;}
+  .data-sub em{color:var(--amber);font-style:normal;}
+  .divider{border:none;border-top:1px solid var(--border);margin:0.75rem 0;}
+  .planet-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid var(--border);}
+  .planet-row:last-child{border-bottom:none;}
+  .planet-name{color:var(--text-dim);min-width:90px;}
+  .planet-pos{color:var(--amber);text-align:right;}
+  .planet-pos .sign{color:var(--amber-bright);}
+  .dasha-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;}
+  .dasha-active{color:var(--amber-bright);position:relative;padding-left:12px;}
+  .dasha-active::before{content:'▶';position:absolute;left:0;font-size:8px;color:var(--cyan-bright);top:3px;}
+  .dasha-past{color:var(--text-dim);opacity:0.45;}
+  .dasha-future{color:var(--text-dim);}
+  .dasha-years{color:var(--text-dim);font-size:10px;}
+  .tag{display:inline-block;background:var(--amber-faint);border:1px solid var(--amber-dim);color:var(--amber);font-size:10px;padding:2px 6px;letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;}
+  .synthesis{margin-top:1.5rem;border:1px solid var(--border-bright);background:var(--bg3);}
+  .synthesis-header{padding:0.5rem 1rem;border-bottom:1px solid var(--border-bright);font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;display:flex;justify-content:space-between;}
+  .synthesis-body{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);}
+  .synthesis-cell{background:var(--bg2);padding:0.75rem 1rem;}
+  .syn-label{font-size:10px;color:var(--text-dim);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;}
+  .syn-value{font-size:13px;color:var(--amber-bright);}
+  .syn-note{font-size:11px;color:var(--text-dim);margin-top:3px;line-height:1.5;}
+  .status-bar{margin-top:1rem;display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);padding:0.5rem 0;border-top:1px solid var(--border);}
+  .status-active{color:var(--cyan-bright);}
+  .blink{animation:blink 2s step-end infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+  .symbolic-section{margin-top:1rem;border:1px solid var(--border-bright);}
+  .symbolic-header{padding:0.5rem 1rem;background:var(--bg3);font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;display:flex;justify-content:space-between;cursor:pointer;user-select:none;}
+  .symbolic-header:hover{background:var(--border-bright);}
+  .sym-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);}
+  .sym-col{background:var(--bg2);padding:1rem;}
+  .sym-col-title{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);}
+  .sym-entry{margin-bottom:1.25rem;}
+  .sym-entry:last-child{margin-bottom:0;}
+  .sym-entry-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+  .sym-name{font-size:13px;color:var(--amber-bright);letter-spacing:0.05em;}
+  .sym-system{font-size:9px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;}
+  .sym-keywords{font-size:10px;color:var(--amber);letter-spacing:0.05em;margin-bottom:3px;}
+  .sym-desc{font-size:11px;color:var(--text-dim);line-height:1.5;}
+  @media(max-width:900px){.sym-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:500px){.sym-grid{grid-template-columns:1fr;}}
+
+
+  .natal-toggle{display:flex;gap:0;margin-bottom:0.75rem;border:1px solid var(--border-bright);overflow:hidden;}
+  .natal-toggle button{flex:1;background:var(--bg);border:none;color:var(--text-dim);font-family:var(--mono);font-size:10px;padding:4px 8px;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.15s;}
+  .natal-toggle button.active{background:var(--amber-faint);color:var(--amber-bright);}
+  .natal-toggle button:first-child{border-right:1px solid var(--border-bright);}
+  #natal-dial-view{display:none;}
+  #natal-list-view{display:block;}
+  .wheel-wrap{display:flex;justify-content:center;padding:0.5rem 0;}
+
+  .error-msg{color:#e24b4a;font-size:11px;padding:0.5rem;border:1px solid #e24b4a;margin-bottom:1rem;display:none;}
+  @media(max-width:900px){.grid,.synthesis-body{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:500px){.grid,.synthesis-body{grid-template-columns:1fr;}header{flex-direction:column;gap:0.5rem;}}
+</style>
+</head>
+<body>
+<canvas class="stars" id="stars"></canvas>
+<div class="scan-line"></div>
+<div class="container">
+
+  <header>
+    <div>
+      <div class="system-id">Sistema de Navegación Astrológica · v0.4</div>
+      <div class="system-title">ASTRO-NAV HUD</div>
+    </div>
+    <div class="coords">
+      <div>LAT <span id="hdr-lat">—</span> · LON <span id="hdr-lon">—</span></div>
+      <div>FECHA <span id="display-date">—</span> · HORA <span id="display-time">—</span></div>
+      <div>LUGAR <span id="display-place">—</span></div>
+    </div>
+  </header>
+
+  <div id="error-msg" class="error-msg"></div>
+
+  <div class="input-bar">
+    <div class="input-field">
+      <label>Fecha</label>
+      <input type="text" id="inp-date" value="03/04/1974" placeholder="DD/MM/AAAA">
+    </div>
+    <div class="input-field">
+      <label>Hora local</label>
+      <input type="text" id="inp-time" value="09:20" placeholder="HH:MM">
+    </div>
+    <div class="input-field">
+      <label>Ciudad</label>
+      <input type="text" id="inp-place" value="Madrid" placeholder="Ciudad" style="width:130px">
+    </div>
+    <div class="input-field">
+      <label>País</label>
+      <input type="text" id="inp-country" value="España" placeholder="País" style="width:100px">
+    </div>
+    <button class="calc-btn" onclick="calculate()">▶ CALCULAR</button>
+  </div>
+
+  <div class="grid">
+
+    <!-- TONALPOHUALLI -->
+    <div class="column">
+      <div class="col-header">
+        <div class="col-icon">
+          <svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M-5,-8 L-8,-22 L8,-22 L5,-8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M-8,-22 C-10,-26 -8,-30 -4,-28 C-2,-24 -6,-22 -8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M8,-22 C10,-26 8,-30 4,-28 C2,-24 6,-22 8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M8,-5 L22,-8 L22,8 L8,5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M22,-8 C26,-10 30,-8 28,-4 C24,-2 22,-6 22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M22,8 C26,10 30,8 28,4 C24,2 22,6 22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M5,8 L8,22 L-8,22 L-5,8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M8,22 C10,26 8,30 4,28 C2,24 6,22 8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M-8,22 C-10,26 -8,30 -4,28 C-2,24 -6,22 -8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M-8,5 L-22,8 L-22,-8 L-8,-5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M-22,8 C-26,10 -30,8 -28,4 C-24,2 -22,6 -22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M-22,-8 C-26,-10 -30,-8 -28,-4 C-24,-2 -22,-6 -22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="6" fill="none" stroke="#f0a020" stroke-width="1.2"/>
+            <circle cx="0" cy="0" r="2.5" fill="#f0a020"/>
+            <circle cx="0" cy="0" r="4" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+          </svg>
+        </div>
+        <div class="col-header-text">
+          <div class="col-system">Mexica · 260 días</div>
+          <div class="col-title">TONALPOHUALLI</div>
+          <div class="col-origin">Nahuatl · Valle de México</div>
+        </div>
+      </div>
+      <div class="col-body">
+        <div class="data-block">
+          <div class="data-label">Signo del día</div>
+          <div class="data-main"><span class="number" id="t-number">—</span> <span id="t-sign">—</span></div>
+          <div class="data-sub" id="t-sign-es">—</div>
+        </div>
+        <hr class="divider">
+        <div class="data-block">
+          <div class="data-label">Trecena</div>
+          <div class="data-main" style="font-size:14px" id="t-trecena">—</div>
+          <div class="data-sub">Día <em id="t-trecena-day">—</em> de 13</div>
+        </div>
+        <div class="data-block">
+          <div class="data-label">Señor de la Noche</div>
+          <div class="data-main" style="font-size:14px" id="t-lord">—</div>
+        </div>
+        <hr class="divider">
+        <div class="data-block">
+          <div class="data-label">Posición en ciclo</div>
+          <div class="data-main" style="font-size:13px">Día <em id="t-pos">—</em> / 260</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TZOLKIN -->
+    <div class="column">
+      <div class="col-header">
+        <div class="col-icon">
+          <svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0,-22 16,-16 22,0 16,16 0,22 -16,16 -22,0 -16,-16" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <polygon points="0,-11 11,0 0,11 -11,0" fill="none" stroke="#d4860a" stroke-width="1"/>
+            <line x1="0" y1="-22" x2="0" y2="22" stroke="#f0a020" stroke-width="0.75" stroke-dasharray="2,3"/>
+            <line x1="-22" y1="0" x2="22" y2="0" stroke="#7a4d08" stroke-width="0.5" stroke-dasharray="2,4"/>
+            <line x1="-2" y1="-22" x2="2" y2="-22" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+            <line x1="-2" y1="22" x2="2" y2="22" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="3" fill="none" stroke="#f0a020" stroke-width="1"/>
+            <circle cx="0" cy="0" r="1" fill="#f0a020"/>
+          </svg>
+        </div>
+        <div class="col-header-text">
+          <div class="col-system">Maya · 260 días</div>
+          <div class="col-title">TZOLKIN</div>
+          <div class="col-origin">Correlación GMT · Tradición viva</div>
+        </div>
+      </div>
+      <div class="col-body">
+        <div class="data-block">
+          <div class="data-label">Kin</div>
+          <div class="data-main"><span class="number" id="z-number">—</span> <span id="z-sign">—</span></div>
+          <div class="data-sub" id="z-sign-es">—</div>
+        </div>
+        <hr class="divider">
+        <div class="data-block">
+          <div class="data-label">Trecena</div>
+          <div class="data-main" style="font-size:14px" id="z-trecena">—</div>
+          <div class="data-sub">Día <em id="z-trecena-day">—</em> de 13</div>
+        </div>
+        <div class="data-block">
+          <div class="data-label">Long Count</div>
+          <div class="data-main" style="font-size:13px" id="z-lc">—</div>
+          <div class="data-sub">Haab: <em id="z-haab">—</em></div>
+        </div>
+        <hr class="divider">
+        <div class="data-block">
+          <div class="data-label">Posición en ciclo</div>
+          <div class="data-main" style="font-size:13px">Día <em id="z-pos">—</em> / 260</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARTA NATAL -->
+    <div class="column">
+      <div class="col-header">
+        <div class="col-icon">
+          <svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="0" cy="0" r="22" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <circle cx="0" cy="0" r="14" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+            <circle cx="0" cy="0" r="6" fill="none" stroke="#4a3510" stroke-width="0.75"/>
+            <line x1="-22" y1="0" x2="22" y2="0" stroke="#d4860a" stroke-width="1"/>
+            <line x1="0" y1="-22" x2="0" y2="22" stroke="#7a4d08" stroke-width="0.75"/>
+            <line x1="-16" y1="-16" x2="16" y2="16" stroke="#4a3510" stroke-width="0.5"/>
+            <line x1="16" y1="-16" x2="-16" y2="16" stroke="#4a3510" stroke-width="0.5"/>
+            <line x1="-22" y1="0" x2="-26" y2="0" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="2" fill="#f0a020"/>
+          </svg>
+        </div>
+        <div class="col-header-text">
+          <div class="col-system">Helenística · Tropical</div>
+          <div class="col-title">CARTA NATAL</div>
+          <div class="col-origin">Zodíaco tropical · Placidus</div>
+        </div>
+      </div>
+      <div class="col-body">
+        <!-- Toggle listado / dial -->
+        <div class="natal-toggle">
+          <button class="active" onclick="natalView('list')">≡ LISTADO</button>
+          <button onclick="natalView('dial')">◎ DIAL</button>
+        </div>
+
+        <!-- VISTA LISTADO -->
+        <div id="natal-list-view">
+          <div class="data-block">
+            <div class="data-label">Ángulos</div>
+            <div class="planet-row"><span class="planet-name">Ascendente</span><span class="planet-pos"><span class="sign" id="n-asc-deg">—</span> <span id="n-asc-sign">—</span></span></div>
+            <div class="planet-row"><span class="planet-name">MC</span><span class="planet-pos"><span class="sign" id="n-mc-deg">—</span> <span id="n-mc-sign">—</span></span></div>
+          </div>
+          <hr class="divider">
+          <div class="data-block">
+            <div class="data-label">Posiciones planetarias</div>
+            <div class="planet-row"><span class="planet-name">Sol</span><span class="planet-pos"><span class="sign" id="n-sun-deg">—</span> <span id="n-sun-sign">—</span></span></div>
+            <div class="planet-row"><span class="planet-name">Luna</span><span class="planet-pos"><span class="sign" id="n-moon-deg">—</span> <span id="n-moon-sign">—</span></span></div>
+            <div class="planet-row"><span class="planet-name">Mercurio</span><span class="planet-pos"><span class="sign" id="n-mer-deg">—</span> <span id="n-mer-sign">—</span></span></div>
+            <div class="planet-row"><span class="planet-name">Venus</span><span class="planet-pos"><span class="sign" id="n-ven-deg">—</span> <span id="n-ven-sign">—</span></span></div>
+            <div class="planet-row"><span class="planet-name">Marte</span><span class="planet-pos"><span class="sign" id="n-mar-deg">—</span> <span id="n-mar-sign">—</span></span></div>
+            <div class="planet-row"><span class="planet-name">Júpiter</span><span class="planet-pos"><span class="sign" id="n-jup-deg">—</span> <span id="n-jup-sign">—</span></span></div>
+            <div class="planet-row"><span class="planet-name">Saturno</span><span class="planet-pos"><span class="sign" id="n-sat-deg">—</span> <span id="n-sat-sign">—</span></span></div>
+          </div>
+        </div>
+
+        <!-- VISTA DIAL -->
+        <div id="natal-dial-view">
+          <div class="wheel-wrap">
+            <canvas id="natal-wheel" width="220" height="220" style="display:block;"></canvas>
+          </div>
+          <div class="data-block" style="margin-top:0.5rem">
+            <div id="natal-dial-legend" style="font-size:10px;color:var(--text-dim);line-height:1.8;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JYOTISH -->
+    <div class="column">
+      <div class="col-header">
+        <div class="col-icon">
+          <svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="0" cy="0" r="22" fill="none" stroke="#1a1005" stroke-width="1"/>
+            <rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#4a3510" stroke-width="0.75"/>
+            <polygon points="0,-20 17,10 -17,10" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <polygon points="0,20 17,-10 -17,-10" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <polygon points="0,-10 9,5 -9,5" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+            <polygon points="0,10 9,-5 -9,-5" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+            <circle cx="0" cy="0" r="4" fill="none" stroke="#f0a020" stroke-width="0.75"/>
+            <circle cx="0" cy="0" r="2" fill="#f0a020"/>
+          </svg>
+        </div>
+        <div class="col-header-text">
+          <div class="col-system">Védica · Sidérea</div>
+          <div class="col-title">JYOTISH</div>
+          <div class="col-origin">Ayanamsa Lahiri · 23°26'</div>
+        </div>
+      </div>
+      <div class="col-body">
+        <div class="data-block">
+          <div class="data-label">Lagna y luminarias</div>
+          <div class="planet-row"><span class="planet-name">Lagna (ASC)</span><span class="planet-pos"><span class="sign" id="j-asc-deg">—</span> <span id="j-asc-sign">—</span></span></div>
+          <div class="planet-row"><span class="planet-name">Sol</span><span class="planet-pos"><span class="sign" id="j-sun-deg">—</span> <span id="j-sun-sign">—</span></span></div>
+          <div class="planet-row"><span class="planet-name">Luna</span><span class="planet-pos"><span class="sign" id="j-moon-deg">—</span> <span id="j-moon-sign">—</span></span></div>
+          <div class="planet-row"><span class="planet-name">Mercurio</span><span class="planet-pos"><span class="sign" id="j-mer-deg">—</span> <span id="j-mer-sign">—</span></span></div>
+          <div class="planet-row"><span class="planet-name">Marte</span><span class="planet-pos"><span class="sign" id="j-mar-deg">—</span> <span id="j-mar-sign">—</span></span></div>
+          <div class="planet-row"><span class="planet-name">Júpiter</span><span class="planet-pos"><span class="sign" id="j-jup-deg">—</span> <span id="j-jup-sign">—</span></span></div>
+          <div class="planet-row"><span class="planet-name">Saturno</span><span class="planet-pos"><span class="sign" id="j-sat-deg">—</span> <span id="j-sat-sign">—</span></span></div>
+        </div>
+        <hr class="divider">
+        <div class="data-block">
+          <div class="data-label">Nakshatra lunar</div>
+          <div class="data-main" style="font-size:15px" id="j-nakshatra">—</div>
+          <div class="data-sub" id="j-nakshatra-sub">—</div>
+        </div>
+        <hr class="divider">
+        <div class="data-block">
+          <div class="data-label">Mahadasha · Vimshottari</div>
+          <div id="j-dasha-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SYNTHESIS -->
+  <div class="synthesis">
+    <div class="synthesis-header">
+      <span>Síntesis · Convergencia de sistemas</span>
+      <span class="blink">● ACTIVO</span>
+    </div>
+    <div class="synthesis-body">
+      <div class="synthesis-cell">
+        <div class="syn-label">Tonalpohualli</div>
+        <div class="syn-value" id="syn-tonal">—</div>
+        <div class="syn-note" id="syn-tonal-note">—</div>
+      </div>
+      <div class="synthesis-cell">
+        <div class="syn-label">Tzolkin</div>
+        <div class="syn-value" id="syn-tzol">—</div>
+        <div class="syn-note" id="syn-tzol-note">—</div>
+      </div>
+      <div class="synthesis-cell">
+        <div class="syn-label">Carta Natal</div>
+        <div class="syn-value" id="syn-natal">—</div>
+        <div class="syn-note" id="syn-natal-note">—</div>
+      </div>
+      <div class="synthesis-cell">
+        <div class="syn-label">Jyotish</div>
+        <div class="syn-value" id="syn-jyotish">—</div>
+        <div class="syn-note" id="syn-jyotish-note">—</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SYMBOLIC DATA - DESPLEGABLE -->
+  <div class="symbolic-section" id="sym-section">
+    <div class="symbolic-header" onclick="toggleSymbolic()">
+      <span>Referencia simbólica · Características arquetípicas</span>
+      <span id="sym-toggle">▶ DESPLEGAR</span>
+    </div>
+    <div class="symbolic-body" id="sym-body" style="display:none">
+
+      <div class="sym-grid">
+
+        <!-- TONALPOHUALLI -->
+        <div class="sym-col">
+          <div class="sym-col-title">TONALPOHUALLI</div>
+
+          <div class="sym-entry" id="sym-t-sign">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-t-sign-name">—</span>
+              <span class="sym-system">Signo del día</span>
+            </div>
+            <div class="sym-keywords" id="sym-t-sign-kw">—</div>
+            <div class="sym-desc" id="sym-t-sign-desc">—</div>
+          </div>
+
+          <div class="sym-entry" id="sym-t-trecena">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-t-trecena-name">—</span>
+              <span class="sym-system">Trecena</span>
+            </div>
+            <div class="sym-keywords" id="sym-t-trecena-kw">—</div>
+            <div class="sym-desc" id="sym-t-trecena-desc">—</div>
+          </div>
+        </div>
+
+        <!-- TZOLKIN -->
+        <div class="sym-col">
+          <div class="sym-col-title">TZOLKIN</div>
+
+          <div class="sym-entry">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-z-sign-name">—</span>
+              <span class="sym-system">Kin</span>
+            </div>
+            <div class="sym-keywords" id="sym-z-sign-kw">—</div>
+            <div class="sym-desc" id="sym-z-sign-desc">—</div>
+          </div>
+
+          <div class="sym-entry">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-z-trecena-name">—</span>
+              <span class="sym-system">Trecena</span>
+            </div>
+            <div class="sym-keywords" id="sym-z-trecena-kw">—</div>
+            <div class="sym-desc" id="sym-z-trecena-desc">—</div>
+          </div>
+        </div>
+
+        <!-- CARTA NATAL -->
+        <div class="sym-col">
+          <div class="sym-col-title">CARTA NATAL</div>
+
+          <div class="sym-entry">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-n-sun-name">—</span>
+              <span class="sym-system">Sol</span>
+            </div>
+            <div class="sym-keywords" id="sym-n-sun-kw">—</div>
+            <div class="sym-desc" id="sym-n-sun-desc">—</div>
+          </div>
+
+          <div class="sym-entry">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-n-asc-name">—</span>
+              <span class="sym-system">Ascendente</span>
+            </div>
+            <div class="sym-keywords" id="sym-n-asc-kw">—</div>
+            <div class="sym-desc" id="sym-n-asc-desc">—</div>
+          </div>
+
+          <div class="sym-entry">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-n-moon-name">—</span>
+              <span class="sym-system">Luna</span>
+            </div>
+            <div class="sym-keywords" id="sym-n-moon-kw">—</div>
+            <div class="sym-desc" id="sym-n-moon-desc">—</div>
+          </div>
+        </div>
+
+        <!-- JYOTISH -->
+        <div class="sym-col">
+          <div class="sym-col-title">JYOTISH</div>
+
+          <div class="sym-entry">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-j-lagna-name">—</span>
+              <span class="sym-system">Lagna</span>
+            </div>
+            <div class="sym-keywords" id="sym-j-lagna-kw">—</div>
+            <div class="sym-desc" id="sym-j-lagna-desc">—</div>
+          </div>
+
+          <div class="sym-entry">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-j-nk-name">—</span>
+              <span class="sym-system">Nakshatra lunar</span>
+            </div>
+            <div class="sym-keywords" id="sym-j-nk-kw">—</div>
+            <div class="sym-desc" id="sym-j-nk-desc">—</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <span id="status-text">ASTRO-NAV v0.4 · astronomy-engine 2.1.19 · correlación GMT · ayanamsa Lahiri · introduce datos y pulsa CALCULAR</span>
+    <span class="status-active">● SISTEMA OPERATIVO</span>
+  </div>
+
+</div>
+
+<script>
+// ─── TONALPOHUALLI ────────────────────────────────────────────────────────────
+const TONAL_SIGNS=[
+  {n:"Cipactli",es:"Cocodrilo"},{n:"Ehecatl",es:"Viento"},{n:"Calli",es:"Casa"},
+  {n:"Cuetzpalin",es:"Lagartija"},{n:"Coatl",es:"Serpiente"},{n:"Miquiztli",es:"Muerte"},
+  {n:"Mazatl",es:"Venado"},{n:"Tochtli",es:"Conejo"},{n:"Atl",es:"Agua"},
+  {n:"Itzcuintli",es:"Perro"},{n:"Ozomatli",es:"Mono"},{n:"Malinalli",es:"Hierba torcida"},
+  {n:"Acatl",es:"Caña"},{n:"Ocelotl",es:"Jaguar"},{n:"Cuauhtli",es:"Águila"},
+  {n:"Cozcacuauhtli",es:"Buitre"},{n:"Ollin",es:"Movimiento"},{n:"Tecpatl",es:"Pedernal"},
+  {n:"Quiahuitl",es:"Lluvia"},{n:"Xochitl",es:"Flor"}
+];
+const LORDS_NIGHT=["Xiuhtecuhtli","Tlaltecuhtli","Chalchiuhtlicue","Tonatiuh","Tlazolteotl",
+  "Mictlantecuhtli","Centeotl","Tlaloc","Quetzalcoatl"];
+const T_ANCHOR_JDN=2276849,T_ANCHOR_POS=105;
+
+// ─── TZOLKIN ──────────────────────────────────────────────────────────────────
+const TZOL_SIGNS=[
+  {m:"Imix",es:"Dragón de Agua"},{m:"Ik",es:"Viento"},{m:"Akbal",es:"Noche"},
+  {m:"Kan",es:"Lagarto"},{m:"Chicchan",es:"Serpiente"},{m:"Cimi",es:"Muerte"},
+  {m:"Manik",es:"Venado"},{m:"Lamat",es:"Estrella"},{m:"Muluc",es:"Agua"},
+  {m:"Oc",es:"Perro"},{m:"Chuen",es:"Mono"},{m:"Eb",es:"Camino"},
+  {m:"Ben",es:"Caña"},{m:"Ix",es:"Jaguar"},{m:"Men",es:"Águila"},
+  {m:"Cib",es:"Guerrero"},{m:"Caban",es:"Tierra"},{m:"Etznab",es:"Espejo"},
+  {m:"Cauac",es:"Tormenta"},{m:"Ahau",es:"Sol"}
+];
+const HAAB_MONTHS=["Pop","Uo","Zip","Zotz","Tzec","Xul","Yaxkin","Mol",
+  "Chen","Yax","Zac","Ceh","Mac","Kankin","Muan","Pax","Kayab","Cumku","Uayeb"];
+const Z_ANCHOR_JDN=584283,Z_ANCHOR_POS=160;
+
+// ─── JYOTISH ──────────────────────────────────────────────────────────────────
+const RASHIS=["Mesha","Vrishabha","Mithuna","Kataka","Simha","Kanya",
+  "Tula","Vrischika","Dhanus","Makara","Kumbha","Mīna"];
+const NAKSHATRAS=[
+  {name:"Ashwini",lord:"Ketu",years:7},{name:"Bharani",lord:"Venus",years:20},
+  {name:"Krittika",lord:"Sun",years:6},{name:"Rohini",lord:"Moon",years:10},
+  {name:"Mrigashira",lord:"Mars",years:7},{name:"Ardra",lord:"Rahu",years:18},
+  {name:"Punarvasu",lord:"Jupiter",years:16},{name:"Pushya",lord:"Saturn",years:19},
+  {name:"Ashlesha",lord:"Mercury",years:17},{name:"Magha",lord:"Ketu",years:7},
+  {name:"Purva Phalguni",lord:"Venus",years:20},{name:"Uttara Phalguni",lord:"Sun",years:6},
+  {name:"Hasta",lord:"Moon",years:10},{name:"Chitra",lord:"Mars",years:7},
+  {name:"Swati",lord:"Rahu",years:18},{name:"Vishakha",lord:"Jupiter",years:16},
+  {name:"Anuradha",lord:"Saturn",years:19},{name:"Jyeshtha",lord:"Mercury",years:17},
+  {name:"Mula",lord:"Ketu",years:7},{name:"Purva Ashadha",lord:"Venus",years:20},
+  {name:"Uttara Ashadha",lord:"Sun",years:6},{name:"Shravana",lord:"Moon",years:10},
+  {name:"Dhanishtha",lord:"Mars",years:7},{name:"Shatabhisha",lord:"Rahu",years:18},
+  {name:"Purva Bhadrapada",lord:"Jupiter",years:16},{name:"Uttara Bhadrapada",lord:"Saturn",years:19},
+  {name:"Revati",lord:"Mercury",years:17}
+];
+const DASHA_SEQ=["Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"];
+const DASHA_YRS=[7,20,6,10,7,18,16,19,17];
+
+// ─── SIGNS ────────────────────────────────────────────────────────────────────
+const SIGNS_TROP=["Aries","Tauro","Géminis","Cáncer","Leo","Virgo",
+  "Libra","Escorpio","Sagitario","Capricornio","Acuario","Piscis"];
+const OBLIQUITY=23.4367;
+
+// ─── UTILITIES ────────────────────────────────────────────────────────────────
+function jdnInt(y,m,d){
+  const a=Math.floor((14-m)/12),yr=y+4800-a,mo=m+12*a-3;
+  return d+Math.floor((153*mo+2)/5)+365*yr+Math.floor(yr/4)
+    -Math.floor(yr/100)+Math.floor(yr/400)-32045;
+}
+function toRad(d){return d*Math.PI/180;}
+function toDeg(r){return r*180/Math.PI;}
+function normLon(l){return((l%360)+360)%360;}
+function lonToSign(lon,signs){
+  const s=signs[Math.floor(lon/30)%12];
+  return{sign:s,deg:Math.floor(lon%30)};
+}
+
+// ─── ENGINES ──────────────────────────────────────────────────────────────────
+function calcTonal(y,m,d){
+  const j=jdnInt(y,m,d),diff=j-T_ANCHOR_JDN;
+  const pos=((T_ANCHOR_POS-1+diff)%260+260)%260+1;
+  const si=(pos-1)%20,num=(pos-1)%13+1;
+  const tn=Math.floor((pos-1)/13);
+  const trecenaStart=tn*13+1;
+  const ts=(trecenaStart-1)%20;
+  return{pos,num,sign:TONAL_SIGNS[si],trecenaSign:TONAL_SIGNS[ts],trecenaDay:num,lord:LORDS_NIGHT[j%9]};
+}
+
+function calcTzolkin(y,m,d){
+  const j=jdnInt(y,m,d),diff=j-Z_ANCHOR_JDN;
+  const pos=((Z_ANCHOR_POS-1+diff)%260+260)%260+1;
+  const si=(pos-1)%20,num=(pos-1)%13+1;
+  const tn=Math.floor((pos-1)/13);
+  const ts=(tn*13)%20;
+  const lcd=diff;
+  const bk=Math.floor(Math.abs(lcd)/144000)*(lcd<0?-1:1);
+  const r1=((lcd%144000)+144000)%144000;
+  const kt=Math.floor(r1/7200),r2=r1%7200,tu=Math.floor(r2/360);
+  const r3=r2%360,ui=Math.floor(r3/20),ki=r3%20;
+  const hp=((diff+348)%365+365)%365;
+  const hm=Math.min(Math.floor(hp/20),18),hd=hp%20;
+  return{pos,num,sign:TZOL_SIGNS[si],trecenaSign:TZOL_SIGNS[ts],trecenaDay:num,
+    longCount:`${bk}.${kt}.${tu}.${ui}.${ki}`,haab:`${hd} ${HAAB_MONTHS[hm]}`};
+}
+
+function calcAngles(y,m,d,hUTC,minUTC,lat,lon){
+  const jd=jdnInt(y,m,d)+(hUTC+minUTC/60-12)/24;
+  const T=(jd-2451545.0)/36525;
+  let gst=280.46061837+360.98564736629*(jd-2451545.0)+0.000387933*T*T-(T*T*T)/38710000;
+  gst=normLon(gst);
+  const lst=normLon(gst+lon);
+  const ramc=toRad(lst),eps=toRad(OBLIQUITY),la=toRad(lat);
+  let asc=toDeg(Math.atan2(Math.cos(ramc),-(Math.sin(ramc)*Math.cos(eps)+Math.tan(la)*Math.sin(eps))));
+  asc=normLon(asc);
+  let mc=toDeg(Math.atan2(Math.sin(ramc),Math.cos(ramc)*Math.cos(eps)));
+  mc=normLon(mc);
+  return{asc:lonToSign(asc,SIGNS_TROP),mc:lonToSign(mc,SIGNS_TROP)};
+}
+
+function getPlanetLon(bodyName,dateUTC){
+  try{
+    const t=Astronomy.MakeTime(dateUTC);
+    // GeoVector -> Ecliptic -> elon (ecliptic longitude in degrees)
+    const vec=Astronomy.GeoVector(bodyName,t,false);
+    const ecl=Astronomy.Ecliptic(vec);
+    return normLon(ecl.elon);
+  }catch(e){
+    console.error('Planet error',bodyName,e.message);
+    return null;
+  }
+}
+
+function lahiriAyanamsa(year){return 22.4602+(year-1900)*0.013961;}
+
+function calcDashas(moonLonSid,birthYear){
+  const nkIdx=Math.floor(moonLonSid/(360/27));
+  const nk=NAKSHATRAS[nkIdx];
+  const fracWithin=(moonLonSid%(360/27))/(360/27);
+  const elapsed=fracWithin*nk.years;
+  const startIdx=DASHA_SEQ.indexOf(nk.lord);
+  const timeline=[];
+  let cur=birthYear-elapsed;
+  for(let i=0;i<9;i++){
+    const idx=(startIdx+i)%9;
+    const yrs=DASHA_YRS[idx];
+    timeline.push({lord:DASHA_SEQ[idx],start:cur,end:cur+yrs});
+    cur+=yrs;
+  }
+  return{nakshatra:nk,timeline};
+}
+
+// ─── CITIES ───────────────────────────────────────────────────────────────────
+const CITIES={
+  "madrid":{lat:40.4168,lon:-3.7038},"barcelona":{lat:41.3851,lon:2.1734},
+  "sevilla":{lat:37.3891,lon:-5.9845},"bilbao":{lat:43.2630,lon:-2.9350},
+  "valencia":{lat:39.4699,lon:-0.3763},"zaragoza":{lat:41.6488,lon:-0.8891},
+  "guadalajara":{lat:40.6318,lon:-3.1670},"malaga":{lat:36.7213,lon:-4.4213},
+  "el casar":{lat:40.6942,lon:-3.4736},
+  "mexico":{lat:19.4326,lon:-99.1332},"ciudad de mexico":{lat:19.4326,lon:-99.1332},
+  "paris":{lat:48.8566,lon:2.3522},"london":{lat:51.5074,lon:-0.1278},
+  "new york":{lat:40.7128,lon:-74.0060},"buenos aires":{lat:-34.6037,lon:-58.3816},
+  "lima":{lat:-12.0464,lon:-77.0428},"bogota":{lat:4.7110,lon:-74.0721},
+  "santiago":{lat:-33.4489,lon:-70.6693},"caracas":{lat:10.4806,lon:-66.9036},
+};
+
+function getCoords(city){
+  const ck=city.toLowerCase().trim();
+  if(CITIES[ck])return CITIES[ck];
+  for(const k of Object.keys(CITIES)){if(ck.includes(k)||k.includes(ck))return CITIES[k];}
+  return null;
+}
+
+function getUTCOffset(country,month){
+  const ck=country.toLowerCase().trim();
+  if(ck==="españa"||ck==="spain")return(month>=4&&month<=10)?2:1;
+  if(ck==="mexico"||ck==="méxico")return -6;
+  if(ck==="france"||ck==="francia")return(month>=4&&month<=10)?2:1;
+  if(ck==="uk"||ck==="reino unido")return(month>=4&&month<=10)?1:0;
+  if(ck==="argentina")return -3;
+  if(ck==="peru"||ck==="perú")return -5;
+  if(ck==="colombia")return -5;
+  if(ck==="chile")return(month>=4&&month<=9)?-4:-3;
+  if(ck==="venezuela")return -4;
+  return 0;
+}
+
+// ─── SET ──────────────────────────────────────────────────────────────────────
+function set(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+
+// ─── MAIN ─────────────────────────────────────────────────────────────────────
+function calculate(){
+  const errEl=document.getElementById('error-msg');
+  errEl.style.display='none';
+
+  const dateStr=document.getElementById('inp-date').value.trim();
+  const timeStr=document.getElementById('inp-time').value.trim();
+  const city=document.getElementById('inp-place').value.trim();
+  const country=document.getElementById('inp-country').value.trim();
+
+  const dp=dateStr.split('/');
+  if(dp.length<3){showError('Formato de fecha: DD/MM/AAAA');return;}
+  const d=parseInt(dp[0]),m=parseInt(dp[1]),y=parseInt(dp[2]);
+  if(isNaN(d)||isNaN(m)||isNaN(y)){showError('Fecha inválida');return;}
+
+  const tp=timeStr.split(':');
+  const hLocal=parseInt(tp[0]||0),minLocal=parseInt(tp[1]||0);
+
+  const coords=getCoords(city);
+  if(!coords){showError(`Ciudad no encontrada: "${city}". Prueba con el nombre en español o inglés.`);return;}
+
+  const utcOffset=getUTCOffset(country,m);
+  const hUTC=hLocal-utcOffset;
+  const birthYear=y+((m-1)/12)+(d/365);
+
+  // Update header
+  set('display-date',`${String(d).padStart(2,'0')}.${String(m).padStart(2,'0')}.${y}`);
+  set('display-time',`${timeStr} (UTC${utcOffset>=0?'+':''}${utcOffset})`);
+  set('display-place',`${city.toUpperCase()}, ${country.toUpperCase()}`);
+  set('hdr-lat',`${Math.abs(coords.lat).toFixed(2)}°${coords.lat>=0?'N':'S'}`);
+  set('hdr-lon',`${Math.abs(coords.lon).toFixed(2)}°${coords.lon>=0?'E':'W'}`);
+
+  // TONALPOHUALLI
+  const t=calcTonal(y,m,d);
+  set('t-number',t.num);
+  set('t-sign',t.sign.n);
+  set('t-sign-es',t.sign.es);
+  set('t-trecena',`1 ${t.trecenaSign.n}`);
+  set('t-trecena-day',t.trecenaDay);
+  set('t-lord',t.lord);
+  set('t-pos',t.pos);
+
+  // TZOLKIN
+  const z=calcTzolkin(y,m,d);
+  set('z-number',z.num);
+  set('z-sign',z.sign.m);
+  set('z-sign-es',z.sign.es);
+  set('z-trecena',`1 ${z.trecenaSign.m}`);
+  set('z-trecena-day',z.trecenaDay);
+  set('z-lc',z.longCount);
+  set('z-haab',z.haab);
+  set('z-pos',z.pos);
+
+  // ANGLES
+  const ang=calcAngles(y,m,d,hUTC,minLocal,coords.lat,coords.lon);
+  set('n-asc-deg',`${ang.asc.deg}°`);set('n-asc-sign',ang.asc.sign);
+  set('n-mc-deg',`${ang.mc.deg}°`);set('n-mc-sign',ang.mc.sign);
+  // Store full ecliptic longitudes for wheel
+  // lonToSign doesn't return index, so find sign position from name
+  wheelAngles.asc = SIGNS_TROP.indexOf(ang.asc.sign) * 30 + ang.asc.deg;
+  wheelAngles.mc  = SIGNS_TROP.indexOf(ang.mc.sign)  * 30 + ang.mc.deg;
+  // Jyotish ASC (sidereal)
+  const ay=lahiriAyanamsa(y);
+  const ascSid=normLon(ang.asc.deg+Math.floor(SIGNS_TROP.indexOf(ang.asc.sign)*30)-ay);
+  const jAsc=lonToSign(normLon((ang.asc.deg+SIGNS_TROP.indexOf(ang.asc.sign)*30)-ay),RASHIS);
+  set('j-asc-deg',`${jAsc.deg}°`);set('j-asc-sign',jAsc.sign);
+
+  // PLANETS via astronomy-engine
+  const dateUTC=new Date(Date.UTC(y,m-1,d,hUTC,minLocal,0));
+  const planetMap=[
+    {body:'Sun',   tIds:['n-sun-deg','n-sun-sign'],   jIds:['j-sun-deg','j-sun-sign']},
+    {body:'Moon',  tIds:['n-moon-deg','n-moon-sign'],  jIds:['j-moon-deg','j-moon-sign']},
+    {body:'Mercury',tIds:['n-mer-deg','n-mer-sign'],  jIds:['j-mer-deg','j-mer-sign']},
+    {body:'Venus', tIds:['n-ven-deg','n-ven-sign'],   jIds:null},
+    {body:'Mars',  tIds:['n-mar-deg','n-mar-sign'],   jIds:['j-mar-deg','j-mar-sign']},
+    {body:'Jupiter',tIds:['n-jup-deg','n-jup-sign'],  jIds:['j-jup-deg','j-jup-sign']},
+    {body:'Saturn',tIds:['n-sat-deg','n-sat-sign'],   jIds:['j-sat-deg','j-sat-sign']},
+  ];
+
+  let moonLonTrop=null;
+  let symSunSign='—', symMoonSign='—', symNkName='—';
+  wheelPlanets = [];
+
+  planetMap.forEach(p=>{
+    const lon=getPlanetLon(p.body,dateUTC);
+    if(lon===null)return;
+    if(p.body==='Moon')moonLonTrop=lon;
+    // Tropical
+    const tSign=lonToSign(lon,SIGNS_TROP);
+    if(p.body==='Sun') symSunSign=tSign.sign;
+    if(p.body==='Moon') symMoonSign=tSign.sign;
+    // Store for wheel
+    wheelPlanets.push({body:p.body, lon});
+    if(p.tIds){set(p.tIds[0],`${tSign.deg}°`);set(p.tIds[1],tSign.sign);}
+    // Sidereal
+    if(p.jIds){
+      const sidLon=normLon(lon-ay);
+      const jSign=lonToSign(sidLon,RASHIS);
+      set(p.jIds[0],`${jSign.deg}°`);set(p.jIds[1],jSign.sign);
+    }
+  });
+
+  // NAKSHATRA + DASHA
+  if(moonLonTrop!==null){
+    const moonSid=normLon(moonLonTrop-ay);
+    const dashaData=calcDashas(moonSid,birthYear);
+    const nk=dashaData.nakshatra;
+    set('j-nakshatra',nk.name);
+    set('j-nakshatra-sub',`Señor: ${nk.lord}`);
+
+    symNkName=nk.name;
+    const dashaList=document.getElementById('j-dasha-list');
+    if(dashaList){
+      dashaList.innerHTML='';
+      const now=new Date().getFullYear()+(new Date().getMonth()/12);
+      dashaData.timeline.forEach(d=>{
+        const isActive=now>=d.start&&now<d.end;
+        const isPast=now>=d.end;
+        const cls=isActive?'dasha-active':isPast?'dasha-past':'dasha-future';
+        dashaList.innerHTML+=`<div class="dasha-row ${cls}">
+          <span>${d.lord}</span>
+          <span class="dasha-years">${Math.floor(d.start)}–${Math.floor(d.end)}</span>
+        </div>`;
+      });
+    }
+  }
+
+  // SYNTHESIS
+  set('syn-tonal',`${t.num} ${t.sign.n}`);
+  set('syn-tonal-note',`${t.sign.es} · Trecena ${t.trecenaSign.n} · ${t.lord}`);
+  set('syn-tzol',`${z.num} ${z.sign.m}`);
+  set('syn-tzol-note',`${z.sign.es} · Trecena ${z.trecenaSign.m}`);
+  set('syn-natal',`${ang.asc.sign} ASC · ${ang.mc.sign} MC`);
+  set('syn-natal-note',`Sol · Luna · planetas calculados`);
+  set('syn-jyotish',`${jAsc.sign} Lagna`);
+  set('syn-jyotish-note',moonLonTrop!==null?`Luna: ${NAKSHATRAS[Math.floor(normLon(moonLonTrop-ay)/(360/27))].name}`:'—');
+
+  // Symbolic update - values from variables already in scope
+  const lagnaMap = {Mesha:'Aries',Vrishabha:'Tauro',Mithuna:'Géminis',Kataka:'Cáncer',
+    Simha:'Leo',Kanya:'Virgo',Tula:'Libra',Vrischika:'Escorpio',Dhanus:'Sagitario',
+    Makara:'Capricornio',Kumbha:'Acuario','Mīna':'Piscis'};
+  updateSymbolic(
+    {sign: t.sign.n, trecena: t.trecenaSign.n},
+    {sign: z.sign.m, trecena: z.trecenaSign.m},
+    symSunSign, ang.asc.sign, symMoonSign,
+    lagnaMap[jAsc.sign] || jAsc.sign,
+    symNkName
+  );
+
+  // Wheel drawn on demand when user switches to dial view
+
+  set('status-text',`ASTRO-NAV v0.4 · astronomy-engine 2.1.19 · ${city} (${coords.lat.toFixed(2)},${coords.lon.toFixed(2)}) · UTC${utcOffset>=0?'+':''}${utcOffset}`);
+}
+
+function showError(msg){
+  const el=document.getElementById('error-msg');
+  el.textContent=msg;el.style.display='block';
+}
+
+
+// ─── SYMBOLIC DATA ────────────────────────────────────────────────────────────
+// Carga dinámica desde YAML en src/data/
+// Si el servidor no sirve los archivos, usa fallback embebido mínimo
+
+let SYM = {
+  tonal: {}, tzolkin: {}, natal: {}, rashis: {}, nakshatras: {}
+};
+
+function parseYAML(text) {
+  // Parser mínimo para nuestra estructura específica
+  // Solo soporta: clave raíz, subclave: "valor"
+  const entries = {};
+  let cur = null;
+  for (const raw of text.split('\n')) {
+    const line = raw;
+    if (!line.trim() || line.trim().startsWith('#')) continue;
+    if (!/^ /.test(line) && line.includes(':') && !line.trim().startsWith('-')) {
+      cur = line.split(':')[0].trim();
+      entries[cur] = {};
+    } else if (cur && /^  \w/.test(line)) {
+      const colon = line.indexOf(':');
+      if (colon === -1) continue;
+      const k = line.slice(0, colon).trim();
+      const v = line.slice(colon + 1).trim().replace(/^"|"$/g, '');
+      entries[cur][k] = v;
+    }
+  }
+  return entries;
+}
+
+async function loadSymbolicData() {
+  const files = [
+    { key: 'tonal',      path: 'src/data/tonalpohualli.yaml'      },
+    { key: 'tzolkin',    path: 'src/data/tzolkin.yaml'            },
+    { key: 'natal',      path: 'src/data/natal.yaml'              },
+    { key: 'rashis',     path: 'src/data/jyotish-rashis.yaml'     },
+    { key: 'nakshatras', path: 'src/data/jyotish-nakshatras.yaml' },
+  ];
+  let loaded = 0;
+  for (const f of files) {
+    try {
+      const res = await fetch(f.path);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      SYM[f.key] = parseYAML(text);
+      loaded++;
+    } catch(e) {
+      console.warn(`No se pudo cargar ${f.path} — usando fallback embebido`);
+    }
+  }
+  if (loaded < files.length) loadFallback();
+  console.log(`Symbolic data: ${loaded}/${files.length} archivos cargados desde YAML`);
+}
+
+function loadFallback() {
+  // Fallback mínimo — solo signos relevantes para la carta de ejemplo
+  // El fallback completo está en los archivos YAML
+  if (!SYM.tonal.Ollin) SYM.tonal = {
+    Cipactli:{keywords:"Origen · Fuerza bruta · Caos fértil",description:"Primer signo del ciclo. Energía primordial anterior a toda forma."},
+    Ehecatl:{keywords:"Comunicación · Soplo vital · Lo invisible",description:"Viento como fuerza creadora. Mensajero entre planos."},
+    Calli:{keywords:"Interioridad · Refugio · Noche",description:"La casa como espacio sagrado y protector."},
+    Cuetzpalin:{keywords:"Vitalidad · Agilidad · Regeneración",description:"Energía solar en el cuerpo. Adaptación y regeneración."},
+    Coatl:{keywords:"Poder · Sabiduría peligrosa · Muda",description:"La serpiente como fuerza transformadora."},
+    Miquiztli:{keywords:"Transformación · Umbral · Tránsito",description:"La muerte como paso, no fin."},
+    Mazatl:{keywords:"Sensibilidad · Nobleza · Vulnerabilidad sagrada",description:"El animal elegido por los dioses. Percepción fina de lo invisible."},
+    Tochtli:{keywords:"Fertilidad · Abundancia · Riesgo de exceso",description:"Energía lunar y cíclica. Abundancia que puede volverse dispersión."},
+    Atl:{keywords:"Flujo · Purificación · Conflicto",description:"El agua como fuerza que limpia y erosiona."},
+    Itzcuintli:{keywords:"Lealtad · Guía · Inframundo",description:"Guía de almas. Fidelidad y conocimiento del umbral."},
+    Ozomatli:{keywords:"Creatividad · Juego · Artes",description:"Maestro del gozo y el ingenio."},
+    Malinalli:{keywords:"Resistencia · Persistencia · Lo que no cede",description:"La hierba que crece entre piedras."},
+    Acatl:{keywords:"Autoridad · Rectitud · Transmisión",description:"La caña como columna vertebral."},
+    Ocelotl:{keywords:"Poder nocturno · Guerrero · Visión en la oscuridad",description:"Señor de la noche. Opera fuera de la luz."},
+    Cuauhtli:{keywords:"Visión solar · Elevación · Claridad",description:"El águila que acompaña al sol."},
+    Cozcacuauhtli:{keywords:"Longevidad · Sabiduría acumulada · Paciencia",description:"Sabiduría que solo da la experiencia larga."},
+    Ollin:{keywords:"Movimiento sísmico · Transformación · Centro activo",description:"Signo del Quinto Sol actual. Energía que no puede detenerse sin consecuencias."},
+    Tecpatl:{keywords:"Corte · Sacrificio · Separación precisa",description:"El pedernal como instrumento sagrado."},
+    Quiahuitl:{keywords:"Renovación · Abundancia impredecible · Tormenta",description:"La lluvia de fuego y agua. Transformación sin aviso."},
+    Xochitl:{keywords:"Belleza · Arte · Florecimiento final",description:"Culminación del ciclo. Lo que florece al final."}
+  };
+  if (!SYM.tzolkin.Etznab) SYM.tzolkin = {
+    Imix:{keywords:"Origen · Aguas primordiales · Receptividad",description:"Primer kin. Conciencia que emerge del océano cósmico."},
+    Ik:{keywords:"Espíritu · Comunicación esencial · Aliento",description:"Aliento de vida. Conecta lo visible con lo invisible."},
+    Akbal:{keywords:"Misterio · Sabiduría interior · Gestación",description:"La casa de la oscuridad sagrada."},
+    Kan:{keywords:"Semilla · Potencial latente · Germinación",description:"Lo que contiene toda posibilidad."},
+    Chicchan:{keywords:"Fuerza vital · Kundalini · Canal",description:"Corriente de energía que asciende."},
+    Cimi:{keywords:"Muerte · Transición · Rendición necesaria",description:"El gran transformador maya."},
+    Manik:{keywords:"Sanación · Herramienta · Servicio",description:"La mano como instrumento sagrado."},
+    Lamat:{keywords:"Armonía · Abundancia venusina · Belleza",description:"Venus como estrella de la mañana."},
+    Muluc:{keywords:"Memoria emocional · Luna · Flujo",description:"Las aguas de la memoria colectiva."},
+    Oc:{keywords:"Lealtad · Guía fiel · Justicia",description:"Compañero del camino y guardián."},
+    Chuen:{keywords:"Maestro artesano · Tiempo creativo · Arte",description:"El tejedor del tiempo."},
+    Eb:{keywords:"Senda · Destino · Lo humano",description:"La hierba del camino que se hace al andar."},
+    Ben:{keywords:"Transmisión · Maestro · Canal",description:"La columna que conecta tierra y cielo. Vocación de enseñar."},
+    Ix:{keywords:"Magia · Tierra sagrada · Misterio",description:"Guardián de los misterios de la tierra."},
+    Men:{keywords:"Visión global · Mente elevada · Horizonte",description:"La mente que vuela alto para ver el conjunto."},
+    Cib:{keywords:"Perdón · Sabiduría antigua · Purificación",description:"Purificación a través del conocimiento acumulado."},
+    Caban:{keywords:"Tierra · Sincronía · Mente cósmica",description:"La tierra como mente viva."},
+    Etznab:{keywords:"Espejo · Verdad sin filtro · Corte preciso",description:"El espejo de obsidiana que no miente. Refleja sin distorsión."},
+    Cauac:{keywords:"Catalizador · Purificación intensa · Tormenta",description:"La tormenta que limpia antes del amanecer."},
+    Ahau:{keywords:"Sol · Amor incondicional · Plenitud",description:"El señor solar. Culminación del ciclo."}
+  };
+  if (!SYM.natal.Aries) SYM.natal = {
+    Aries:{keywords:"Iniciativa · Fuego pionero · Comienzo",description:"Energía que abre camino sin esperar consenso."},
+    Tauro:{keywords:"Solidez · Sensorialidad · Persistencia",description:"Construye lento, construye sólido."},
+    Geminis:{keywords:"Dualidad · Comunicación · Adaptabilidad",description:"La mente que multiplica perspectivas."},
+    Cancer:{keywords:"Protección · Memoria · Raíz emocional",description:"El caparazón que guarda lo esencial."},
+    Leo:{keywords:"Expresión · Dignidad solar · Generosidad",description:"El corazón que necesita expresarse."},
+    Virgo:{keywords:"Análisis · Servicio · Precisión",description:"La mente que distingue y ordena."},
+    Libra:{keywords:"Equilibrio · Relación · Justicia",description:"La balanza como principio ordenador."},
+    Escorpio:{keywords:"Profundidad · Transformación · Poder oculto",description:"Lo que opera bajo la superficie."},
+    Sagitario:{keywords:"Expansión · Búsqueda de sentido · Horizonte",description:"La flecha hacia lo lejano."},
+    Capricornio:{keywords:"Estructura · Autoridad · Legado",description:"La montaña que se escala con paciencia."},
+    Acuario:{keywords:"Visión · Colectivo · Ruptura necesaria",description:"El portador de agua para todos."},
+    Piscis:{keywords:"Disolución · Intuición · Compasión",description:"El océano de todo lo posible."}
+  };
+  if (!SYM.nakshatras.Magha) SYM.nakshatras = {
+    Magha:{keywords:"Trono ancestral · Autoridad innata · Linaje",description:"La sala del trono vacío. Autoridad que no se toma — se reconoce."},
+    Hasta:{keywords:"Destreza · Manifestación · Habilidad",description:"La mano que hace. Capacidad de materializar con precisión."},
+    Ashwini:{keywords:"Velocidad · Sanación · Iniciación",description:"Los gemelos divinos del amanecer. Energía rápida que inicia y cura."}
+  };
+}
+
+// Inicializar al cargar
+loadSymbolicData();
+
+function updateSymbolic(tonal, tzolkin, natalSun, natalAsc, natalMoon, jyotishLagna, nakshatra) {
+  function fill(nameId, kwId, descId, data, key) {
+    const d = data[key];
+    if (!d) return;
+    if (nameId) set(nameId, key);
+    set(kwId, d.keywords || d.kw || '—');
+    set(descId, d.description || d.desc || '—');
+  }
+  fill('sym-t-sign-name',    'sym-t-sign-kw',    'sym-t-sign-desc',    SYM.tonal,      tonal.sign);
+  fill('sym-t-trecena-name', 'sym-t-trecena-kw', 'sym-t-trecena-desc', SYM.tonal,      tonal.trecena);
+  fill('sym-z-sign-name',    'sym-z-sign-kw',    'sym-z-sign-desc',    SYM.tzolkin,    tzolkin.sign);
+  fill('sym-z-trecena-name', 'sym-z-trecena-kw', 'sym-z-trecena-desc', SYM.tzolkin,    tzolkin.trecena);
+  fill('sym-n-sun-name',     'sym-n-sun-kw',     'sym-n-sun-desc',     SYM.natal,      natalSun);
+  fill('sym-n-asc-name',     'sym-n-asc-kw',     'sym-n-asc-desc',     SYM.natal,      natalAsc);
+  fill('sym-n-moon-name',    'sym-n-moon-kw',    'sym-n-moon-desc',    SYM.natal,      natalMoon);
+  fill('sym-j-lagna-name',   'sym-j-lagna-kw',   'sym-j-lagna-desc',   SYM.natal,      jyotishLagna);
+  fill('sym-j-nk-name',      'sym-j-nk-kw',      'sym-j-nk-desc',      SYM.nakshatras, nakshatra);
+}
+
+function toggleSymbolic() {
+  const body = document.getElementById('sym-body');
+  const toggle = document.getElementById('sym-toggle');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    toggle.textContent = '▼ PLEGAR';
+  } else {
+    body.style.display = 'none';
+    toggle.textContent = '▶ DESPLEGAR';
+  }
+}
+
+
+// ─── NATAL WHEEL ─────────────────────────────────────────────────────────────
+const WHEEL_SIGNS = ["AR","TA","GE","CN","LE","VI","LI","SC","SG","CP","AC","PI"];
+const WHEEL_NAMES = ["Aries","Tauro","Gém.","Cán.","Leo","Virgo",
+                     "Libra","Esc.","Sag.","Cap.","Acua.","Pisc."];
+const PLANET_SYMBOLS = {
+  Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀',
+  Mars:'♂', Jupiter:'♃', Saturn:'♄'
+};
+const PLANET_ES = {
+  Sun:'Sol', Moon:'Luna', Mercury:'Mercurio', Venus:'Venus',
+  Mars:'Marte', Jupiter:'Júpiter', Saturn:'Saturno'
+};
+const PLANET_COLOR = {
+  Sun:'#f0a020', Moon:'#c8d4f0', Mercury:'#a0d4a0', Venus:'#f0a0c0',
+  Mars:'#f04040', Jupiter:'#a080f0', Saturn:'#d4b060'
+};
+
+// Store planet positions for wheel
+let wheelPlanets = [];
+let wheelAngles = { asc: null, mc: null };
+
+function drawNatalWheel() {
+  const canvas = document.getElementById('natal-wheel');
+  if (!canvas) return;
+  console.log('drawNatalWheel:', wheelPlanets.length, 'planets', 'ASC:', wheelAngles.asc, 'MC:', wheelAngles.mc);
+  const ctx = canvas.getContext('2d');
+  const cx = 110, cy = 110;
+  const R = 100, r1 = 80, r2 = 60, r3 = 20;
+
+  ctx.clearRect(0, 0, 220, 220);
+
+  // Outer ring - zodiac
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = '#4a3510';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, r1, 0, Math.PI * 2);
+  ctx.strokeStyle = '#2a1f08';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, r2, 0, Math.PI * 2);
+  ctx.strokeStyle = '#1a1005';
+  ctx.lineWidth = 0.75;
+  ctx.stroke();
+
+  // ASC at left (9 o'clock = π in canvas)
+  // Ecliptic goes counter-clockwise; canvas clockwise → negate
+  const ascLon = wheelAngles.asc !== null ? wheelAngles.asc : 0;
+  const offset = Math.PI - (ascLon * Math.PI / 180);
+
+  // Sign divisions
+  for (let i = 0; i < 12; i++) {
+    const angle = -(i * 30) * Math.PI / 180 + offset;
+    // Division line
+    ctx.beginPath();
+    ctx.moveTo(cx + r1 * Math.cos(angle), cy + r1 * Math.sin(angle));
+    ctx.lineTo(cx + R * Math.cos(angle), cy + R * Math.sin(angle));
+    ctx.strokeStyle = '#2a1f08';
+    ctx.lineWidth = 0.75;
+    ctx.stroke();
+
+    // Sign glyph
+    const midAngle = -((i + 0.5) * 30) * Math.PI / 180 + offset;
+    const gx = cx + (r1 + (R - r1) / 2) * Math.cos(midAngle);
+    const gy = cy + (r1 + (R - r1) / 2) * Math.sin(midAngle);
+    ctx.font = 'bold 9px var(--mono, monospace)';
+    ctx.fillStyle = '#d4860a';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(WHEEL_SIGNS[i], gx, gy);
+  }
+
+  // ASC line
+  if (wheelAngles.asc !== null) {
+    const ascAngle = -(wheelAngles.asc * Math.PI / 180) + offset;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r2 * Math.cos(ascAngle), cy + r2 * Math.sin(ascAngle));
+    ctx.strokeStyle = '#f0a020';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    // DSC opposite
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r2 * Math.cos(ascAngle + Math.PI), cy + r2 * Math.sin(ascAngle + Math.PI));
+    ctx.strokeStyle = '#7a4d08';
+    ctx.lineWidth = 0.75;
+    ctx.stroke();
+  }
+
+  // MC line
+  if (wheelAngles.mc !== null) {
+    const mcAngle = -(wheelAngles.mc * Math.PI / 180) + offset;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r2 * Math.cos(mcAngle), cy + r2 * Math.sin(mcAngle));
+    ctx.strokeStyle = '#f0a020';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r2 * Math.cos(mcAngle + Math.PI), cy + r2 * Math.sin(mcAngle + Math.PI));
+    ctx.strokeStyle = '#7a4d08';
+    ctx.lineWidth = 0.75;
+    ctx.stroke();
+  }
+
+  // Planets - between r2 (60) and r1 (80)
+  const pr = (r1 + r2) / 2; // 70px from center
+  wheelPlanets.forEach(p => {
+    if (p.lon === null || p.lon === undefined) return;
+    const angle = -(p.lon * Math.PI / 180) + offset;
+    const px = cx + pr * Math.cos(angle);
+    const py = cy + pr * Math.sin(angle);
+
+    // Draw small circle background
+    ctx.beginPath();
+    ctx.arc(px, py, 7, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(8,10,14,0.8)';
+    ctx.fill();
+
+    ctx.font = 'bold 14px serif';
+    ctx.fillStyle = PLANET_COLOR[p.body] || '#d4860a';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(PLANET_SYMBOLS[p.body] || '●', px, py);
+  });
+
+  // Center dot
+  ctx.beginPath();
+  ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+  ctx.fillStyle = '#f0a020';
+  ctx.fill();
+
+  // Legend
+  const legend = document.getElementById('natal-dial-legend');
+  if (legend) {
+    legend.innerHTML = wheelPlanets
+      .filter(p => p.lon !== null)
+      .map(p => {
+        const sign = SIGNS_TROP[Math.floor(p.lon / 30) % 12];
+        const deg = Math.floor(p.lon % 30);
+        const sym = PLANET_SYMBOLS[p.body] || '●';
+        return `<div style="display:flex;justify-content:space-between;padding:1px 0;border-bottom:1px solid var(--border)"><span style="color:${PLANET_COLOR[p.body]}">${sym} ${PLANET_ES[p.body]}</span><span style="color:var(--amber)">${deg}° ${sign}</span></div>`;
+      })
+      .join('');
+  }
+}
+
+function natalView(mode) {
+  const list = document.getElementById('natal-list-view');
+  const dial = document.getElementById('natal-dial-view');
+  const btns = document.querySelectorAll('.natal-toggle button');
+  if (mode === 'list') {
+    list.style.display = 'block';
+    dial.style.display = 'none';
+    btns[0].classList.add('active');
+    btns[1].classList.remove('active');
+  } else {
+    list.style.display = 'none';
+    dial.style.display = 'block';
+    btns[0].classList.remove('active');
+    btns[1].classList.add('active');
+    // requestAnimationFrame ensures element is painted before drawing
+    requestAnimationFrame(() => requestAnimationFrame(drawNatalWheel));
+  }
+}
+
+// ─── STARS ────────────────────────────────────────────────────────────────────
+const canvas=document.getElementById('stars');
+const ctx=canvas.getContext('2d');
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+const stars=[];
+for(let i=0;i<220;i++)stars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.2,o:Math.random()*0.6+0.1,s:Math.random()*0.002+0.001});
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const t=Date.now()/1000;
+  stars.forEach((s,i)=>{
+    const f=s.o+Math.sin(t*s.s*10+i)*0.15;
+    ctx.beginPath();ctx.arc(s.x*canvas.width,s.y*canvas.height,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(200,146,42,${Math.max(0,f)})`;ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+</script>
+</body>
+</html>

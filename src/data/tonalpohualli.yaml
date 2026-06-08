@@ -1,0 +1,103 @@
+# Tonalpohualli - 20 signos del día
+# Fuentes: Códice Borgia, Códice Borbónico, Sahagún (Historia General), Alfonso Caso
+# Formato: nombre en náhuatl, español, palabras clave, descripción arquetípica
+
+Cipactli:
+  es: Cocodrilo
+  keywords: "Origen · Fuerza bruta · Caos fértil"
+  description: "Primer signo del ciclo. Energía primordial anterior a toda forma, como la superficie del océano antes de la creación."
+
+Ehecatl:
+  es: Viento
+  keywords: "Comunicación · Soplo vital · Lo invisible"
+  description: "Viento como fuerza creadora. Mensajero entre planos, portador del aliento de vida que anima la materia."
+
+Calli:
+  es: Casa
+  keywords: "Interioridad · Refugio · Noche"
+  description: "La casa como espacio sagrado y protector. Lo que contiene, la oscuridad fértil donde germina lo nuevo."
+
+Cuetzpalin:
+  es: Lagartija
+  keywords: "Vitalidad · Agilidad · Regeneración"
+  description: "Energía solar en el cuerpo. Capacidad de moverse rápido, adaptarse y regenerarse tras la pérdida."
+
+Coatl:
+  es: Serpiente
+  keywords: "Poder · Sabiduría peligrosa · Muda"
+  description: "La serpiente como fuerza que transforma. Conocimiento que exige iniciación — no se posee sin coste."
+
+Miquiztli:
+  es: Muerte
+  keywords: "Transformación · Umbral · Tránsito"
+  description: "La muerte como paso, no fin. Señor del umbral entre estados, guardián de lo que ya cumplió su ciclo."
+
+Mazatl:
+  es: Venado
+  keywords: "Sensibilidad · Nobleza · Vulnerabilidad sagrada"
+  description: "El animal elegido por los dioses. Percepción fina de lo invisible, presencia en los espacios liminales."
+
+Tochtli:
+  es: Conejo
+  keywords: "Fertilidad · Abundancia · Riesgo de exceso"
+  description: "Energía lunar y cíclica. Abundancia que puede volverse dispersión si no encuentra cauce."
+
+Atl:
+  es: Agua
+  keywords: "Flujo · Purificación · Conflicto"
+  description: "El agua como fuerza que limpia, nutre y erosiona. Movimiento sin forma fija que abre camino inevitablemente."
+
+Itzcuintli:
+  es: Perro
+  keywords: "Lealtad · Guía · Inframundo"
+  description: "Guía de almas en el camino al Mictlán. Fidelidad absoluta y conocimiento del umbral entre mundos."
+
+Ozomatli:
+  es: Mono
+  keywords: "Creatividad · Juego · Artes"
+  description: "Maestro del gozo y el ingenio. Talento artístico que emerge espontáneamente, sin esfuerzo aparente."
+
+Malinalli:
+  es: Hierba torcida
+  keywords: "Resistencia · Persistencia · Lo que no cede"
+  description: "La hierba que crece entre piedras. Tenacidad extrema bajo presión — sobrevive donde otros no pueden."
+
+Acatl:
+  es: Caña
+  keywords: "Autoridad · Rectitud · Transmisión"
+  description: "La caña como columna vertebral. Lo que sostiene erguido, conecta tierra y cielo, y sirve de canal."
+
+Ocelotl:
+  es: Jaguar
+  keywords: "Poder nocturno · Guerrero · Visión en la oscuridad"
+  description: "Señor de la noche y del inframundo solar. Fuerza que opera fuera de la luz, ve lo que otros no ven."
+
+Cuauhtli:
+  es: Águila
+  keywords: "Visión solar · Elevación · Claridad"
+  description: "El águila que acompaña al sol en su ascenso. Perspectiva que trasciende lo inmediato, conexión con la luz."
+
+Cozcacuauhtli:
+  es: Buitre
+  keywords: "Longevidad · Sabiduría acumulada · Paciencia"
+  description: "El que sobrevive y depura. Sabiduría que solo da la experiencia larga, capacidad de esperar sin ansiedad."
+
+Ollin:
+  es: Movimiento
+  keywords: "Movimiento sísmico · Transformación · Centro activo"
+  description: "Signo del Quinto Sol, la era actual. Energía que no puede detenerse sin consecuencias — el movimiento es su naturaleza."
+
+Tecpatl:
+  es: Pedernal
+  keywords: "Corte · Sacrificio · Separación precisa"
+  description: "El pedernal como instrumento sagrado. Claridad que distingue con precisión, separa lo necesario de lo que sobra."
+
+Quiahuitl:
+  es: Lluvia
+  keywords: "Renovación · Abundancia impredecible · Tormenta"
+  description: "La lluvia de fuego y agua. Transformación que llega sin aviso, fertiliza o destruye según su intensidad."
+
+Xochitl:
+  es: Flor
+  keywords: "Belleza · Arte · Florecimiento final"
+  description: "El vigésimo signo, culminación del ciclo. Lo que florece al final y da sentido a todo lo recorrido."

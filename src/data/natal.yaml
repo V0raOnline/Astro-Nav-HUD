@@ -1,0 +1,88 @@
+# Astrología occidental - 12 signos del zodíaco tropical
+# Fuentes: tradición helenística, Ptolomeo (Tetrabiblos), tradición moderna
+# Nota: descripciones basadas en caracterización arquetípica clásica
+# sin interpretación psicológica moderna
+
+Aries:
+  simbolo: "♈"
+  elemento: Fuego
+  modalidad: Cardinal
+  keywords: "Iniciativa · Fuego pionero · Comienzo"
+  description: "Primer signo, inicio del ciclo solar. Energía que abre camino sin esperar consenso — fuerza del impulso puro."
+
+Tauro:
+  simbolo: "♉"
+  elemento: Tierra
+  modalidad: Fijo
+  keywords: "Solidez · Sensorialidad · Persistencia"
+  description: "La forma que da cuerpo a la energía. Construye lento, construye sólido. Resistencia natural al cambio no necesario."
+
+Geminis:
+  simbolo: "♊"
+  elemento: Aire
+  modalidad: Mutable
+  keywords: "Dualidad · Comunicación · Adaptabilidad mental"
+  description: "La mente que multiplica perspectivas. Velocidad conceptual y capacidad de conectar lo aparentemente inconexo."
+
+Cancer:
+  simbolo: "♋"
+  elemento: Agua
+  modalidad: Cardinal
+  keywords: "Protección · Memoria · Raíz emocional"
+  description: "El caparazón que guarda lo esencial. Profunda memoria afectiva — lo que fue forma lo que es."
+
+Leo:
+  simbolo: "♌"
+  elemento: Fuego
+  modalidad: Fijo
+  keywords: "Expresión · Dignidad solar · Generosidad"
+  description: "El corazón que necesita expresarse. Creatividad que no pide permiso, orgullo legítimo en lo que se es."
+
+Virgo:
+  simbolo: "♍"
+  elemento: Tierra
+  modalidad: Mutable
+  keywords: "Análisis · Servicio · Precisión"
+  description: "La mente que distingue, ordena y mejora. Perfeccionismo al servicio del conjunto, no del ego."
+
+Libra:
+  simbolo: "♎"
+  elemento: Aire
+  modalidad: Cardinal
+  keywords: "Equilibrio · Relación · Justicia"
+  description: "La balanza como principio ordenador. Busca el punto justo entre opuestos — no neutralidad sino armonía activa."
+
+Escorpio:
+  simbolo: "♏"
+  elemento: Agua
+  modalidad: Fijo
+  keywords: "Profundidad · Transformación · Poder oculto"
+  description: "Lo que opera bajo la superficie. Intensidad que regenera o destruye — rara vez deja las cosas como las encontró."
+
+Sagitario:
+  simbolo: "♐"
+  elemento: Fuego
+  modalidad: Mutable
+  keywords: "Expansión · Búsqueda de sentido · Horizonte"
+  description: "La flecha hacia lo lejano. Necesidad de comprender el conjunto, de encontrar la ley que une los fenómenos."
+
+Capricornio:
+  simbolo: "♑"
+  elemento: Tierra
+  modalidad: Cardinal
+  keywords: "Estructura · Autoridad · Legado"
+  description: "La montaña que se escala con paciencia. Construye para que dure, actúa desde la responsabilidad del tiempo largo."
+
+Acuario:
+  simbolo: "♒"
+  elemento: Aire
+  modalidad: Fijo
+  keywords: "Visión · Colectivo · Ruptura necesaria"
+  description: "El portador de agua para todos. Innovación al servicio del futuro colectivo, no del beneficio individual."
+
+Piscis:
+  simbolo: "♓"
+  elemento: Agua
+  modalidad: Mutable
+  keywords: "Disolución · Intuición · Compasión"
+  description: "El océano de todo lo posible. Percepción que trasciende límites — recibe lo que los otros no pueden captar."

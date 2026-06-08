@@ -1,0 +1,103 @@
+# Tzolkin - 20 signos del día (Kins)
+# Fuentes: Popol Vuh, Chilam Balam, tradición k'iche' viva, Barbara Tedlock
+# Formato: nombre maya, español, palabras clave, descripción arquetípica
+
+Imix:
+  es: Dragón de Agua
+  keywords: "Origen · Aguas primordiales · Receptividad"
+  description: "Primer kin del ciclo. Conciencia que emerge del océano cósmico — potencial puro antes de tomar forma."
+
+Ik:
+  es: Viento
+  keywords: "Espíritu · Comunicación esencial · Aliento"
+  description: "El viento como aliento de vida. Conecta lo visible con lo invisible, lleva mensajes sin dejar rastro."
+
+Akbal:
+  es: Noche
+  keywords: "Misterio · Sabiduría interior · Gestación"
+  description: "La casa de la oscuridad sagrada. Conocimiento que no necesita luz exterior — emerge desde adentro."
+
+Kan:
+  es: Lagarto / Semilla
+  keywords: "Semilla · Potencial latente · Germinación"
+  description: "Lo que contiene toda posibilidad sin haberla manifestado aún. Energía en espera de su momento."
+
+Chicchan:
+  es: Serpiente
+  keywords: "Fuerza vital · Kundalini · Canal"
+  description: "Corriente de energía que asciende por el cuerpo. Poder que requiere un canal adecuado para no destruir."
+
+Cimi:
+  es: Muerte / Transformación
+  keywords: "Muerte · Transición · Rendición necesaria"
+  description: "El gran transformador maya. Soltar lo que ya cumplió su función — no resistencia sino entrega consciente."
+
+Manik:
+  es: Venado / Mano
+  keywords: "Sanación · Herramienta · Servicio"
+  description: "La mano como instrumento sagrado. Capacidad innata de sanar, construir y servir con precisión."
+
+Lamat:
+  es: Estrella / Conejo
+  keywords: "Armonía · Abundancia venusina · Belleza"
+  description: "Venus como estrella de la mañana y tarde. Belleza que equilibra, abundancia que comparte sin calcular."
+
+Muluc:
+  es: Agua / Luna
+  keywords: "Memoria emocional · Luna · Flujo"
+  description: "Las aguas de la memoria colectiva. Recoge, retiene y devuelve — todo deja huella en este signo."
+
+Oc:
+  es: Perro
+  keywords: "Lealtad · Guía fiel · Justicia"
+  description: "Compañero del camino y guardián de la ley. La fidelidad como práctica espiritual, no solo virtud social."
+
+Chuen:
+  es: Mono / Artesano
+  keywords: "Maestro artesano · Tiempo creativo · Arte"
+  description: "El tejedor del tiempo. El arte como forma genuina de conocimiento, no decoración sino comprensión."
+
+Eb:
+  es: Camino / Hierba
+  keywords: "Senda · Destino · Lo humano"
+  description: "La hierba del camino que se hace al andar. El destino no como imposición sino como construcción continua."
+
+Ben:
+  es: Caña / Maíz
+  keywords: "Transmisión · Maestro · Canal"
+  description: "La columna que conecta tierra y cielo. Vocación de enseñar, transmitir, servir de puente entre mundos."
+
+Ix:
+  es: Jaguar
+  keywords: "Magia · Tierra sagrada · Misterio"
+  description: "Guardián de los misterios de la tierra. Poder que opera en profundidad, fuera de lo que se puede ver."
+
+Men:
+  es: Águila
+  keywords: "Visión global · Mente elevada · Horizonte"
+  description: "La mente que vuela alto para ver el conjunto. Perspectiva que trasciende lo inmediato sin perder detalle."
+
+Cib:
+  es: Guerrero / Buitre
+  keywords: "Perdón · Sabiduría antigua · Purificación"
+  description: "El guerrero que ha visto suficiente para perdonar. Purificación a través del conocimiento acumulado."
+
+Caban:
+  es: Tierra / Movimiento
+  keywords: "Tierra · Sincronía · Mente cósmica"
+  description: "La tierra como mente viva. Resonancia con los ritmos del campo colectivo — sincronía como modo de ser."
+
+Etznab:
+  es: Espejo / Pedernal
+  keywords: "Espejo · Verdad sin filtro · Corte preciso"
+  description: "El espejo de obsidiana que no miente. Refleja sin distorsión, corta con precisión lo que necesita separarse."
+
+Cauac:
+  es: Tormenta / Lluvia
+  keywords: "Catalizador · Purificación intensa · Tormenta"
+  description: "La tormenta que limpia antes del amanecer. Transformación acelerada e inevitable — no se negocia."
+
+Ahau:
+  es: Señor / Sol
+  keywords: "Sol · Amor incondicional · Plenitud"
+  description: "El señor solar, vigésimo kin. Culminación del ciclo, conciencia que ha integrado todo el recorrido."
