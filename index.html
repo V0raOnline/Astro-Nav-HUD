@@ -124,19 +124,25 @@
   <div class="input-bar">
     <div class="input-field">
       <label>Fecha</label>
-      <input type="text" id="inp-date" value="03/04/1974" placeholder="DD/MM/AAAA">
+      <input type="text" id="inp-date" value="" placeholder="DD/MM/AAAA">
     </div>
     <div class="input-field">
       <label>Hora local</label>
-      <input type="text" id="inp-time" value="09:20" placeholder="HH:MM">
+      <input type="text" id="inp-time" value="" placeholder="HH:MM">
     </div>
     <div class="input-field">
       <label>Ciudad</label>
-      <input type="text" id="inp-place" value="Madrid" placeholder="Ciudad" style="width:130px">
+      <input type="text" id="inp-place" value="" placeholder="Ciudad" style="width:130px">
     </div>
     <div class="input-field">
       <label>País</label>
-      <input type="text" id="inp-country" value="España" placeholder="País" style="width:100px">
+      <input type="text" id="inp-country" value="" placeholder="País" style="width:100px"
+             oninput="updateOffsetFromCountry()">
+    </div>
+    <div class="input-field">
+      <label>UTC</label>
+      <input type="text" id="inp-utc" value="" placeholder="±H" style="width:55px"
+             title="Offset UTC calculado automáticamente. Edita si necesitas corregirlo.">
     </div>
     <button class="calc-btn" onclick="calculate()">▶ CALCULAR</button>
   </div>
@@ -647,7 +653,7 @@ function calcDashas(moonLonSid,birthYear){
   return{nakshatra:nk,timeline};
 }
 
-// ─── CITIES ───────────────────────────────────────────────────────────────────
+// ─── CITIES - tabla local como fallback ───────────────────────────────────────
 const CITIES={
   "madrid":{lat:40.4168,lon:-3.7038},"barcelona":{lat:41.3851,lon:2.1734},
   "sevilla":{lat:37.3891,lon:-5.9845},"bilbao":{lat:43.2630,lon:-2.9350},
@@ -661,32 +667,152 @@ const CITIES={
   "santiago":{lat:-33.4489,lon:-70.6693},"caracas":{lat:10.4806,lon:-66.9036},
 };
 
-function getCoords(city){
+function getLocalCoords(city){
   const ck=city.toLowerCase().trim();
   if(CITIES[ck])return CITIES[ck];
   for(const k of Object.keys(CITIES)){if(ck.includes(k)||k.includes(ck))return CITIES[k];}
   return null;
 }
 
-function getUTCOffset(country,month){
-  const ck=country.toLowerCase().trim();
-  if(ck==="españa"||ck==="spain")return(month>=4&&month<=10)?2:1;
-  if(ck==="mexico"||ck==="méxico")return -6;
-  if(ck==="france"||ck==="francia")return(month>=4&&month<=10)?2:1;
-  if(ck==="uk"||ck==="reino unido")return(month>=4&&month<=10)?1:0;
-  if(ck==="argentina")return -3;
-  if(ck==="peru"||ck==="perú")return -5;
-  if(ck==="colombia")return -5;
-  if(ck==="chile")return(month>=4&&month<=9)?-4:-3;
-  if(ck==="venezuela")return -4;
-  return 0;
+async function getCoords(city, country){
+  // Intentar Nominatim primero
+  try {
+    const q = encodeURIComponent(`${city}${country ? ', '+country : ''}`);
+    const url = `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=3&addressdetails=1`;
+    const res = await fetch(url, {
+      headers: {'Accept-Language': 'es', 'User-Agent': 'AstroNavHUD/0.4'}
+    });
+    if (!res.ok) throw new Error('Nominatim no disponible');
+    const data = await res.json();
+    if (data && data.length > 0) {
+      // Si hay varios resultados, preferir ciudad sobre otros tipos
+      const best = data.find(d => ['city','town','village','municipality'].includes(d.type))
+                   || data[0];
+      // Trim display name: city + country only
+      const parts = best.display_name.split(',');
+      const display = parts.length >= 2
+        ? `${parts[0].trim()}, ${parts[parts.length-1].trim()}`
+        : parts[0].trim();
+      // Autofill country field if empty
+      const countryFromNominatim = best.address?.country || parts[parts.length-1].trim();
+      const countryInput = document.getElementById('inp-country');
+      if (countryInput && !countryInput.value.trim()) {
+        countryInput.value = countryFromNominatim;
+        // Trigger UTC update
+        setTimeout(updateOffsetFromCountry, 50);
+      }
+      return {
+        lat: parseFloat(best.lat),
+        lon: parseFloat(best.lon),
+        display,
+        country: countryFromNominatim,
+        source: 'nominatim'
+      };
+    }
+    throw new Error('Ciudad no encontrada en Nominatim');
+  } catch(e) {
+    console.warn('Nominatim:', e.message, '— usando tabla local');
+    const local = getLocalCoords(city);
+    if (local) return {...local, display: city, source: 'local'};
+    return null;
+  }
+}
+
+function getUTCOffset(country, month) {
+  // DST helper: Northern hemisphere summer = months 4-10, Southern = 11-3
+  const summerN = month >= 4 && month <= 10;
+  const summerS = month >= 11 || month <= 3;
+
+  const ck = (country || '').toLowerCase().trim()
+    .normalize('NFD').replace(/[̀-ͯ]/g, ''); // strip accents
+
+  // Europa
+  if (['espana','spain'].includes(ck))          return summerN ? 2 : 1;
+  if (['portugal'].includes(ck))                return summerN ? 1 : 0;
+  if (['francia','france'].includes(ck))        return summerN ? 2 : 1;
+  if (['alemania','germany','deutschland'].includes(ck)) return summerN ? 2 : 1;
+  if (['italia','italy'].includes(ck))          return summerN ? 2 : 1;
+  if (['belgica','belgium','belgique'].includes(ck)) return summerN ? 2 : 1;
+  if (['paises bajos','netherlands','holland'].includes(ck)) return summerN ? 2 : 1;
+  if (['suiza','switzerland','suisse'].includes(ck)) return summerN ? 2 : 1;
+  if (['austria'].includes(ck))                 return summerN ? 2 : 1;
+  if (['grecia','greece'].includes(ck))         return summerN ? 3 : 2;
+  if (['polonia','poland'].includes(ck))        return summerN ? 2 : 1;
+  if (['rumania','romania'].includes(ck))       return summerN ? 3 : 2;
+  if (['ucrania','ukraine'].includes(ck))       return 2;
+  if (['reino unido','uk','united kingdom','great britain'].includes(ck)) return summerN ? 1 : 0;
+  if (['irlanda','ireland'].includes(ck))       return summerN ? 1 : 0;
+  if (['suecia','sweden'].includes(ck))         return summerN ? 2 : 1;
+  if (['noruega','norway'].includes(ck))        return summerN ? 2 : 1;
+  if (['dinamarca','denmark'].includes(ck))     return summerN ? 2 : 1;
+  if (['finlandia','finland'].includes(ck))     return summerN ? 3 : 2;
+  if (['rusia','russia'].includes(ck))          return 3; // Moscú
+  if (['turquia','turkey','türkiye'].includes(ck)) return 3;
+
+  // América del Norte
+  if (['canada'].includes(ck))                  return summerN ? -4 : -5; // Toronto ref
+  if (['estados unidos','usa','united states'].includes(ck)) return summerN ? -4 : -5; // ET ref
+  if (['mexico','méxico'].includes(ck))         return summerN ? -5 : -6; // Ciudad de México
+
+  // Caribe
+  if (['cuba'].includes(ck))                    return summerN ? -4 : -5;
+  if (['puerto rico'].includes(ck))             return -4;
+  if (['republica dominicana','dominican republic'].includes(ck)) return -4;
+
+  // Centroamérica
+  if (['guatemala'].includes(ck))               return -6;
+  if (['honduras'].includes(ck))                return -6;
+  if (['el salvador'].includes(ck))             return -6;
+  if (['nicaragua'].includes(ck))               return -6;
+  if (['costa rica'].includes(ck))              return -6;
+  if (['panama'].includes(ck))                  return -5;
+
+  // Sudamérica
+  if (['colombia'].includes(ck))                return -5;
+  if (['ecuador'].includes(ck))                 return -5;
+  if (['peru','perú'].includes(ck))             return -5;
+  if (['venezuela'].includes(ck))               return -4;
+  if (['bolivia'].includes(ck))                 return -4;
+  if (['brasil','brazil'].includes(ck))         return -3;
+  if (['uruguay'].includes(ck))                 return -3;
+  if (['argentina'].includes(ck))               return -3;
+  if (['chile'].includes(ck))                   return summerS ? -3 : -4;
+  if (['paraguay'].includes(ck))                return summerS ? -3 : -4;
+
+  // Asia
+  if (['china'].includes(ck))                   return 8;
+  if (['japon','japan'].includes(ck))           return 9;
+  if (['corea del sur','south korea','korea'].includes(ck)) return 9;
+  if (['india'].includes(ck))                   return 5.5;
+  if (['pakistan'].includes(ck))                return 5;
+  if (['indonesia'].includes(ck))               return 7; // Yakarta
+  if (['tailandia','thailand'].includes(ck))    return 7;
+  if (['vietnam'].includes(ck))                 return 7;
+  if (['filipinas','philippines'].includes(ck)) return 8;
+  if (['israel'].includes(ck))                  return summerN ? 3 : 2;
+  if (['arabia saudi','saudi arabia'].includes(ck)) return 3;
+  if (['emiratos','uae','united arab emirates'].includes(ck)) return 4;
+  if (['iran'].includes(ck))                    return summerN ? 4.5 : 3.5;
+
+  // África
+  if (['marruecos','morocco'].includes(ck))     return summerN ? 1 : 0;
+  if (['egipto','egypt'].includes(ck))          return 2;
+  if (['nigeria'].includes(ck))                 return 1;
+  if (['sudafrica','south africa'].includes(ck)) return 2;
+  if (['kenia','kenya'].includes(ck))           return 3;
+
+  // Oceanía
+  if (['australia'].includes(ck))               return summerS ? 11 : 10; // Sydney
+  if (['nueva zelanda','new zealand'].includes(ck)) return summerS ? 13 : 12;
+
+  return 0; // UTC por defecto
 }
 
 // ─── SET ──────────────────────────────────────────────────────────────────────
 function set(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
-function calculate(){
+async function calculate(){
   const errEl=document.getElementById('error-msg');
   errEl.style.display='none';
 
@@ -703,17 +829,40 @@ function calculate(){
   const tp=timeStr.split(':');
   const hLocal=parseInt(tp[0]||0),minLocal=parseInt(tp[1]||0);
 
-  const coords=getCoords(city);
-  if(!coords){showError(`Ciudad no encontrada: "${city}". Prueba con el nombre en español o inglés.`);return;}
+  showError('Buscando ciudad...');
+  document.getElementById('error-msg').style.background='var(--bg3)';
+  document.getElementById('error-msg').style.color='var(--text-dim)';
+  document.getElementById('error-msg').style.borderColor='var(--border-bright)';
 
-  const utcOffset=getUTCOffset(country,m);
+  const coords=await getCoords(city, country);
+
+  // Reset error style
+  document.getElementById('error-msg').style.background='';
+  document.getElementById('error-msg').style.color='';
+  document.getElementById('error-msg').style.borderColor='';
+
+  if(!coords){
+    showError(`Ciudad no encontrada: "${city}". Verifica el nombre e inténtalo de nuevo.`);
+    return;
+  }
+
+  // Use manual UTC field if set, otherwise calculate from country
+  const utcField = document.getElementById('inp-utc');
+  let utcOffset;
+  const utcManual = utcField && utcField.value.trim();
+  if (utcManual && !isNaN(parseFloat(utcManual))) {
+    utcOffset = parseFloat(utcManual);
+  } else {
+    utcOffset = getUTCOffset(country, m);
+    if (utcField) utcField.value = utcOffset >= 0 ? `+${utcOffset}` : `${utcOffset}`;
+  }
   const hUTC=hLocal-utcOffset;
   const birthYear=y+((m-1)/12)+(d/365);
 
   // Update header
   set('display-date',`${String(d).padStart(2,'0')}.${String(m).padStart(2,'0')}.${y}`);
   set('display-time',`${timeStr} (UTC${utcOffset>=0?'+':''}${utcOffset})`);
-  set('display-place',`${city.toUpperCase()}, ${country.toUpperCase()}`);
+  set('display-place', coords.display ? coords.display.toUpperCase() : `${city.toUpperCase()}, ${country.toUpperCase()}`);
   set('hdr-lat',`${Math.abs(coords.lat).toFixed(2)}°${coords.lat>=0?'N':'S'}`);
   set('hdr-lon',`${Math.abs(coords.lon).toFixed(2)}°${coords.lon>=0?'E':'W'}`);
 
@@ -836,7 +985,9 @@ function calculate(){
 
   // Wheel drawn on demand when user switches to dial view
 
-  set('status-text',`ASTRO-NAV v0.4 · astronomy-engine 2.1.19 · ${city} (${coords.lat.toFixed(2)},${coords.lon.toFixed(2)}) · UTC${utcOffset>=0?'+':''}${utcOffset}`);
+  set('status-text',`ASTRO-NAV v0.4 · astronomy-engine 2.1.19 · ${coords.display||city} (${coords.lat.toFixed(2)},${coords.lon.toFixed(2)}) · UTC${utcOffset>=0?'+':''}${utcOffset} · geo:${coords.source||'local'}`);
+  // Hide loading message
+  document.getElementById('error-msg').style.display='none';
 }
 
 function showError(msg){
@@ -989,6 +1140,15 @@ function updateSymbolic(tonal, tzolkin, natalSun, natalAsc, natalMoon, jyotishLa
   fill('sym-j-nk-name',      'sym-j-nk-kw',      'sym-j-nk-desc',      SYM.nakshatras, nakshatra);
 }
 
+function updateOffsetFromCountry() {
+  const country = document.getElementById('inp-country').value;
+  const month = parseInt((document.getElementById('inp-date').value.split('/')[1])||0);
+  if (!country || !month) return;
+  const offset = getUTCOffset(country, month);
+  const utcField = document.getElementById('inp-utc');
+  if (utcField) utcField.value = offset >= 0 ? `+${offset}` : `${offset}`;
+}
+
 function toggleSymbolic() {
   const body = document.getElementById('sym-body');
   const toggle = document.getElementById('sym-toggle');
@@ -1026,7 +1186,6 @@ let wheelAngles = { asc: null, mc: null };
 function drawNatalWheel() {
   const canvas = document.getElementById('natal-wheel');
   if (!canvas) return;
-  console.log('drawNatalWheel:', wheelPlanets.length, 'planets', 'ASC:', wheelAngles.asc, 'MC:', wheelAngles.mc);
   const ctx = canvas.getContext('2d');
   const cx = 110, cy = 110;
   const R = 100, r1 = 80, r2 = 60, r3 = 20;
