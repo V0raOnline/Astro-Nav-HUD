@@ -419,24 +419,6 @@
             <div class="sym-keywords" id="sym-t-trecena-kw">—</div>
             <div class="sym-desc" id="sym-t-trecena-desc">—</div>
           </div>
-
-          <div class="sym-entry">
-            <div class="sym-entry-header">
-              <span class="sym-name" id="sym-t-lord-name">—</span>
-              <span class="sym-system">Señor de la Noche</span>
-            </div>
-            <div class="sym-keywords" id="sym-t-lord-kw">—</div>
-            <div class="sym-desc" id="sym-t-lord-desc">—</div>
-          </div>
-
-          <div class="sym-entry">
-            <div class="sym-entry-header">
-              <span class="sym-name" id="sym-t-num-name">—</span>
-              <span class="sym-system">Número del ciclo</span>
-            </div>
-            <div class="sym-keywords" id="sym-t-num-kw">—</div>
-            <div class="sym-desc" id="sym-t-num-desc">—</div>
-          </div>
         </div>
 
         <!-- TZOLKIN -->
@@ -459,15 +441,6 @@
             </div>
             <div class="sym-keywords" id="sym-z-trecena-kw">—</div>
             <div class="sym-desc" id="sym-z-trecena-desc">—</div>
-          </div>
-
-          <div class="sym-entry">
-            <div class="sym-entry-header">
-              <span class="sym-name" id="sym-z-num-name">—</span>
-              <span class="sym-system">Número del ciclo</span>
-            </div>
-            <div class="sym-keywords" id="sym-z-num-kw">—</div>
-            <div class="sym-desc" id="sym-z-num-desc">—</div>
           </div>
         </div>
 
@@ -1008,8 +981,8 @@ async function calculate(){
     Simha:'Leo',Kanya:'Virgo',Tula:'Libra',Vrischika:'Escorpio',Dhanus:'Sagitario',
     Makara:'Capricornio',Kumbha:'Acuario','Mīna':'Piscis'};
   updateSymbolic(
-    {sign: t.sign.n, trecena: t.trecenaSign.n, lord: t.lord, number: t.num},
-    {sign: z.sign.m, trecena: z.trecenaSign.m, number: z.num},
+    {sign: t.sign.n, trecena: t.trecenaSign.n},
+    {sign: z.sign.m, trecena: z.trecenaSign.m},
     symSunSign, ang.asc.sign, symMoonSign,
     lagnaMap[jAsc.sign] || jAsc.sign,
     symNkName
@@ -1033,8 +1006,7 @@ function showError(msg){
 // Si el servidor no sirve los archivos, usa fallback embebido mínimo
 
 let SYM = {
-  tonal: {}, tzolkin: {}, natal: {}, rashis: {}, nakshatras: {},
-  numeros: {}, lordsnoche: {}
+  tonal: {}, tzolkin: {}, natal: {}, rashis: {}, nakshatras: {}
 };
 
 function parseYAML(text) {
@@ -1066,8 +1038,6 @@ async function loadSymbolicData() {
     { key: 'natal',      path: 'src/data/natal.yaml'              },
     { key: 'rashis',     path: 'src/data/jyotish-rashis.yaml'     },
     { key: 'nakshatras', path: 'src/data/jyotish-nakshatras.yaml' },
-    { key: 'numeros',    path: 'src/data/numeros-tonalpohualli.yaml' },
-    { key: 'lordsnoche', path: 'src/data/senores-noche.yaml'      },
   ];
   let loaded = 0;
   for (const f of files) {
@@ -1166,11 +1136,8 @@ function updateSymbolic(tonal, tzolkin, natalSun, natalAsc, natalMoon, jyotishLa
   }
   fill('sym-t-sign-name',    'sym-t-sign-kw',    'sym-t-sign-desc',    SYM.tonal,      tonal.sign);
   fill('sym-t-trecena-name', 'sym-t-trecena-kw', 'sym-t-trecena-desc', SYM.tonal,      tonal.trecena);
-  fill('sym-t-lord-name',    'sym-t-lord-kw',    'sym-t-lord-desc',    SYM.lordsnoche, tonal.lord);
-  fill('sym-t-num-name',     'sym-t-num-kw',     'sym-t-num-desc',     SYM.numeros,    String(tonal.number));
   fill('sym-z-sign-name',    'sym-z-sign-kw',    'sym-z-sign-desc',    SYM.tzolkin,    tzolkin.sign);
   fill('sym-z-trecena-name', 'sym-z-trecena-kw', 'sym-z-trecena-desc', SYM.tzolkin,    tzolkin.trecena);
-  fill('sym-z-num-name',     'sym-z-num-kw',     'sym-z-num-desc',     SYM.numeros,    String(tzolkin.number));
   fill('sym-n-sun-name',     'sym-n-sun-kw',     'sym-n-sun-desc',     SYM.natal,      natalSun);
   fill('sym-n-asc-name',     'sym-n-asc-kw',     'sym-n-asc-desc',     SYM.natal,      natalAsc);
   fill('sym-n-moon-name',    'sym-n-moon-kw',    'sym-n-moon-desc',    SYM.natal,      natalMoon);

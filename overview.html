@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visión general · Astro-Nav HUD</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+  :root {
+    --bg:#080a0e; --bg2:#0d1117; --bg3:#111820;
+    --amber:#d4860a; --amber-bright:#f0a020; --amber-dim:#7a4d08; --amber-faint:#1a1005;
+    --text:#c8922a; --text-dim:#7a5518; --text-bright:#f0b030;
+    --border:#2a1f08; --border-bright:#4a3510;
+    --mono:'Share Tech Mono',monospace; --sans:'Exo 2',sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; }
+
+  header {
+    border-bottom:1px solid var(--border-bright);
+    padding:1.5rem 2rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+  }
+  .system-id { font-family:var(--sans); font-weight:300; font-size:11px; color:var(--text-dim); letter-spacing:0.2em; text-transform:uppercase; }
+  .system-title { font-family:var(--mono); font-size:22px; color:var(--amber-bright); letter-spacing:0.15em; line-height:1; }
+  .nav-links { display:flex; gap:1rem; }
+  .nav-link { font-family:var(--mono); font-size:10px; color:var(--text-dim); text-decoration:none; letter-spacing:0.15em; text-transform:uppercase; border-bottom:1px solid var(--border-bright); padding-bottom:1px; transition:color 0.2s; }
+  .nav-link:hover { color:var(--amber-bright); }
+  .nav-link.active { color:var(--amber); border-bottom-color:var(--amber); }
+
+  .container { max-width:1100px; margin:0 auto; padding:3rem 2rem; }
+
+  .page-label { font-family:var(--mono); font-size:10px; color:var(--text-dim); letter-spacing:0.25em; text-transform:uppercase; margin-bottom:0.75rem; }
+  .page-title { font-family:var(--sans); font-size:28px; font-weight:600; color:var(--amber-bright); margin-bottom:0.5rem; }
+  .page-intro { font-size:14px; color:var(--text-dim); line-height:1.7; max-width:680px; margin-bottom:3rem; }
+
+  .pull-quote {
+    border-left:2px solid var(--amber);
+    padding:1rem 1.5rem;
+    margin:0 0 3rem 0;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--amber-bright);
+    line-height:1.7;
+    background:var(--amber-faint);
+    max-width:680px;
+  }
+
+  /* Grid de marcos */
+  .frameworks-grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border-bright);
+    margin-bottom:3rem;
+  }
+
+  .framework-card {
+    background:var(--bg2);
+    padding:2rem;
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+  }
+
+  .framework-header {
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    padding-bottom:1rem;
+    border-bottom:1px solid var(--border-bright);
+  }
+
+  .framework-icon { flex-shrink:0; opacity:0.85; }
+
+  .framework-meta { flex:1; }
+  .framework-system { font-family:var(--mono); font-size:10px; color:var(--text-dim); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:2px; }
+  .framework-name { font-family:var(--sans); font-size:18px; font-weight:600; color:var(--amber-bright); }
+  .framework-origin { font-family:var(--mono); font-size:10px; color:var(--text-dim); margin-top:2px; font-style:italic; }
+
+  /* Image placeholder */
+  .framework-image {
+    width:100%;
+    height:120px;
+    background:var(--bg3);
+    border:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--mono);
+    font-size:9px;
+    color:var(--text-dim);
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+  }
+
+  .framework-body { font-size:14px; line-height:1.75; color:var(--text); font-weight:300; flex:1; }
+  .framework-body p { margin-bottom:1rem; }
+  .framework-body p:last-child { margin-bottom:0; }
+
+  .framework-link {
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:10px;
+    color:var(--amber-dim);
+    text-decoration:none;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    border:1px solid var(--border-bright);
+    padding:4px 12px;
+    margin-top:auto;
+    transition:all 0.2s;
+    align-self:flex-start;
+  }
+  .framework-link:hover { color:var(--amber-bright); border-color:var(--amber); }
+
+  .divider { border:none; border-top:1px solid var(--border); margin:2rem 0; }
+
+  footer {
+    border-top:1px solid var(--border-bright);
+    padding:1rem 2rem;
+    font-family:var(--mono);
+    font-size:10px;
+    color:var(--text-dim);
+    letter-spacing:0.1em;
+    display:flex;
+    justify-content:space-between;
+    margin-top:2rem;
+  }
+
+  @media(max-width:700px){ .frameworks-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="system-id">Sistema de Navegación Astrológica · v0.4</div>
+    <div style="display:flex;align-items:baseline;gap:1.5rem">
+      <div class="system-title">ASTRO-NAV HUD</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">← Volver al HUD</a>
+        <a href="about.html" class="nav-link">Sobre este proyecto</a>
+        <a href="overview.html" class="nav-link active">Visión general</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="page-label">Los sistemas</div>
+  <div class="page-title">Cuatro caras del prisma</div>
+
+  <div class="page-intro">
+    Cuatro sistemas desarrollados de forma independiente, en culturas sin contacto entre sí, observando el mismo fenómeno desde ángulos distintos. No se contradicen — se complementan. Esta página muestra qué es cada uno, de dónde viene, y qué tipo de información ofrece.
+  </div>
+
+  <div class="pull-quote">
+    Lo que aquí ves no es tu destino. Son las caras del prisma — lo que cada sistema, desde su tradición, desde su observación, ve en ti.
+  </div>
+
+  <div class="frameworks-grid">
+
+    <!-- TONALPOHUALLI -->
+    <div class="framework-card">
+      <div class="framework-header">
+        <div class="framework-icon">
+          <svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M-5,-8 L-8,-22 L8,-22 L5,-8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M-8,-22 C-10,-26 -8,-30 -4,-28 C-2,-24 -6,-22 -8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M8,-22 C10,-26 8,-30 4,-28 C2,-24 6,-22 8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M8,-5 L22,-8 L22,8 L8,5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M22,-8 C26,-10 30,-8 28,-4 C24,-2 22,-6 22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M22,8 C26,10 30,8 28,4 C24,2 22,6 22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M5,8 L8,22 L-8,22 L-5,8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M8,22 C10,26 8,30 4,28 C2,24 6,22 8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M-8,22 C-10,26 -8,30 -4,28 C-2,24 -6,22 -8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M-8,5 L-22,8 L-22,-8 L-8,-5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M-22,8 C-26,10 -30,8 -28,4 C-24,2 -22,6 -22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M-22,-8 C-26,-10 -30,-8 -28,-4 C-24,-2 -22,-6 -22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="6" fill="none" stroke="#f0a020" stroke-width="1.2"/>
+            <circle cx="0" cy="0" r="2.5" fill="#f0a020"/>
+          </svg>
+        </div>
+        <div class="framework-meta">
+          <div class="framework-system">Mexica · 260 días</div>
+          <div class="framework-name">Tonalpohualli</div>
+          <div class="framework-origin">Mesoamérica central · Cultura nahua · Valle de México</div>
+        </div>
+      </div>
+      <div class="framework-image">[ imagen cabecera ]</div>
+      <div class="framework-body">
+        <p>No es un calendario en el sentido que conocemos. No mide el paso del tiempo — lo cualifica. Cada uno de sus 260 días tiene una textura específica, una combinación de signo y número que los pueblos nahuas, originarios del Valle de México, desarrollaron observando ciclos durante siglos.</p>
+        <p>Los tonalpouhque — los especialistas que lo interpretaban — no decían "naciste en tal día, serás tal cosa". Decían "naciste con esta energía, estos son sus potenciales y sus riesgos, aprende a moverte con ella". La distinción importa.</p>
+      </div>
+      <a href="tonalpohualli.html" target="_blank" class="framework-link">Ver marco completo →</a>
+    </div>
+
+    <!-- TZOLKIN -->
+    <div class="framework-card">
+      <div class="framework-header">
+        <div class="framework-icon">
+          <svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0,-22 16,-16 22,0 16,16 0,22 -16,16 -22,0 -16,-16" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <polygon points="0,-11 11,0 0,11 -11,0" fill="none" stroke="#d4860a" stroke-width="1"/>
+            <line x1="0" y1="-22" x2="0" y2="22" stroke="#f0a020" stroke-width="0.75" stroke-dasharray="2,3"/>
+            <line x1="-22" y1="0" x2="22" y2="0" stroke="#7a4d08" stroke-width="0.5" stroke-dasharray="2,4"/>
+            <line x1="-2" y1="-22" x2="2" y2="-22" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+            <line x1="-2" y1="22" x2="2" y2="22" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="3" fill="none" stroke="#f0a020" stroke-width="1"/>
+            <circle cx="0" cy="0" r="1" fill="#f0a020"/>
+          </svg>
+        </div>
+        <div class="framework-meta">
+          <div class="framework-system">Maya · 260 días</div>
+          <div class="framework-name">Tzolkin</div>
+          <div class="framework-origin">Mesoamérica · Tradición maya · Guatemala, México</div>
+        </div>
+      </div>
+      <div class="framework-image">[ imagen cabecera ]</div>
+      <div class="framework-body">
+        <p>Este sistema sigue vivo. No como reliquia académica ni como reconstrucción de códices — sino en comunidades k'iche' y kaqchikel de Guatemala donde los ajq'ijab, los guardianes del tiempo, mantienen la cuenta sin interrupciones hasta hoy.</p>
+        <p>El Tzolkin comparte con el Tonalpohualli la estructura de 260 días, pero emergió de otra tradición, otra lengua, otra cosmología. Que dos culturas sin contacto llegaran a la misma arquitectura temporal dice algo. No sabemos exactamente qué. Pero dice algo.</p>
+        <p>Te mostramos qué signo y número corresponden a tu nacimiento en este ciclo, y qué dice de ellos la tradición que lo ha custodiado hasta hoy.</p>
+      </div>
+      <a href="tzolkin.html" target="_blank" class="framework-link">Ver marco completo →</a>
+    </div>
+
+    <!-- CARTA NATAL -->
+    <div class="framework-card">
+      <div class="framework-header">
+        <div class="framework-icon">
+          <svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="0" cy="0" r="22" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <circle cx="0" cy="0" r="14" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+            <circle cx="0" cy="0" r="6" fill="none" stroke="#4a3510" stroke-width="0.75"/>
+            <line x1="-22" y1="0" x2="22" y2="0" stroke="#d4860a" stroke-width="1"/>
+            <line x1="0" y1="-22" x2="0" y2="22" stroke="#7a4d08" stroke-width="0.75"/>
+            <line x1="-16" y1="-16" x2="16" y2="16" stroke="#4a3510" stroke-width="0.5"/>
+            <line x1="16" y1="-16" x2="-16" y2="16" stroke="#4a3510" stroke-width="0.5"/>
+            <line x1="-22" y1="0" x2="-26" y2="0" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="2" fill="#f0a020"/>
+          </svg>
+        </div>
+        <div class="framework-meta">
+          <div class="framework-system">Helenística · Tropical</div>
+          <div class="framework-name">Carta Natal</div>
+          <div class="framework-origin">Mesopotamia · Grecia · Transmisión árabe y europea</div>
+        </div>
+      </div>
+      <div class="framework-image">[ imagen cabecera ]</div>
+      <div class="framework-body">
+        <p>Esta tradición llegó a occidente desde Babilonia, pasó por Grecia, fue sistematizada por Ptolomeo en el siglo II, sobrevivió la Edad Media en los textos árabes y volvió a Europa a través de Al-Andalus. Dos mil años de transmisión textual ininterrumpida.</p>
+        <p>Lo que calcula es la posición de los planetas en el momento exacto del nacimiento, vista desde el lugar exacto donde ocurrió. El ascendente — el punto más sensible de la carta — cambia cada cuatro minutos. La hora importa.</p>
+        <p>El zodíaco que usa es tropical: referenciado al equinoccio, al ciclo de las estaciones.</p>
+      </div>
+      <a href="natal.html" target="_blank" class="framework-link">Ver marco completo →</a>
+    </div>
+
+    <!-- JYOTISH -->
+    <div class="framework-card">
+      <div class="framework-header">
+        <div class="framework-icon">
+          <svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="0" cy="0" r="22" fill="none" stroke="#1a1005" stroke-width="1"/>
+            <rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#4a3510" stroke-width="0.75"/>
+            <polygon points="0,-20 17,10 -17,10" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <polygon points="0,20 17,-10 -17,-10" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <polygon points="0,-10 9,5 -9,5" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+            <polygon points="0,10 9,-5 -9,-5" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+            <circle cx="0" cy="0" r="4" fill="none" stroke="#f0a020" stroke-width="0.75"/>
+            <circle cx="0" cy="0" r="2" fill="#f0a020"/>
+          </svg>
+        </div>
+        <div class="framework-meta">
+          <div class="framework-system">Védica · Sidérea</div>
+          <div class="framework-name">Jyotish</div>
+          <div class="framework-origin">Subcontinente indio · Tradición védica · Ininterrumpida hasta hoy</div>
+        </div>
+      </div>
+      <div class="framework-image">[ imagen cabecera ]</div>
+      <div class="framework-body">
+        <p>Jyotish significa literalmente "ciencia de la luz". Surge de los Vedangas, originarios del subcontinente indio, en la tradición que nos llega desde los textos sánscritos más antiguos, desarrollados a lo largo del segundo milenio antes de nuestra era.</p>
+        <p>Usa el zodíaco sidéreo: referenciado a las estrellas fijas. Aunque comparte los nombres de los signos con la astrología occidental, las posiciones planetarias difieren porque parten de una geometría distinta. Son preguntas distintas hechas al mismo cielo.</p>
+        <p>El sistema de dashas — períodos planetarios que determinan qué energía predomina en cada etapa de la vida — no tiene equivalente directo en ningún otro sistema de esta herramienta.</p>
+      </div>
+      <a href="jyotish.html" target="_blank" class="framework-link">Ver marco completo →</a>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <span>ASTRO-NAV HUD · v0.4</span>
+  <span>V0ra · <a href="https://v0raonline.substack.com" target="_blank" style="color:var(--amber-dim);text-decoration:none;">v0raonline.substack.com</a></span>
+</footer>
+
+</body>
+</html>

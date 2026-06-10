@@ -1,0 +1,55 @@
+# Números del ciclo — Tonalpohualli y Tzolkin
+# Aplica a ambos sistemas mesoamericanos (misma lógica numérica)
+# Formato: número, cualidad en el ciclo, descripción breve
+
+1:
+  qualidad: "Inicio · Semilla"
+  description: "El ciclo comienza. Energía en su estado más puro, sin forma todavía."
+
+2:
+  qualidad: "Dualidad · Tensión creativa"
+  description: "Primera fricción. Dos fuerzas que se definen mutuamente."
+
+3:
+  qualidad: "Movimiento · Acción inicial"
+  description: "La energía empieza a moverse. Primer impulso hacia la manifestación."
+
+4:
+  qualidad: "Estabilidad · Forma"
+  description: "La energía toma forma. Base sólida sobre la que construir."
+
+5:
+  qualidad: "Centro · Fuerza"
+  description: "Punto central del primer movimiento. Energía concentrada y potente."
+
+6:
+  qualidad: "Flujo · Equilibrio dinámico"
+  description: "Equilibrio en movimiento. La energía fluye sin esfuerzo cuando está alineada."
+
+7:
+  qualidad: "Reflexión · Madurez media"
+  description: "Punto de inflexión del ciclo. La energía se detiene a integrar lo recorrido."
+
+8:
+  qualidad: "Armonía · Consolidación"
+  description: "La forma está consolidada. Energía que ha encontrado su expresión natural."
+
+9:
+  qualidad: "Expansión · Mayor intensidad"
+  description: "La energía alcanza su mayor expansión. Potencial pleno antes de completarse."
+
+10:
+  qualidad: "Manifestación · Realización"
+  description: "Lo que empezó en el 1 se ha manifestado. La energía se vuelve visible."
+
+11:
+  qualidad: "Madurez avanzada · Cerca de la plenitud"
+  description: "Energía madura que no ha llegado aún al exceso. Alta intensidad sostenible."
+
+12:
+  qualidad: "Complejidad · Antes del límite"
+  description: "La energía se complejiza. Un paso antes de la saturación del ciclo."
+
+13:
+  qualidad: "Culminación · Exceso y trascendencia"
+  description: "El ciclo se completa. Energía en su punto más alto — plenitud que roza el desbordamiento."

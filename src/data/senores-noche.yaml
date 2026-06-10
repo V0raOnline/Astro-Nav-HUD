@@ -1,0 +1,48 @@
+# Señores de la Noche — Tonalpohualli
+# Nueve deidades en rotación continua e independiente del ciclo de 260 días
+# Fuentes: Códice Borgia, Códice Borbónico, Sahagún
+
+Xiuhtecuhtli:
+  es: "Señor del Fuego"
+  keywords: "Fuego · Centro · Eje"
+  description: "El más antiguo. Rige el fuego del hogar y el eje que orienta los cuatro rumbos. Presencia de un núcleo que no se extingue."
+
+Tlaltecuhtli:
+  es: "Señor de la Tierra"
+  keywords: "Tierra · Sustento · Peso"
+  description: "La tierra como fuerza activa que sostiene y devora. Lo que hay debajo de todo."
+
+Chalchiuhtlicue:
+  es: "Señora de las Aguas"
+  keywords: "Agua · Corriente · Pureza"
+  description: "Diosa de las aguas en movimiento. Lo que fluye, purifica y da vida sin detenerse."
+
+Tonatiuh:
+  es: "Señor del Sol"
+  keywords: "Sol · Claridad · Sacrificio"
+  description: "El sol que exige para continuar su curso. Energía que ilumina con la misma intensidad que consume."
+
+Tlazolteotl:
+  es: "Señora de la Impureza y el Placer"
+  keywords: "Purificación · Deseo · Ciclo"
+  description: "Diosa que absorbe las impurezas y rige los ciclos del deseo. Lo que se consume y se renueva."
+
+Mictlantecuhtli:
+  es: "Señor de los Muertos"
+  keywords: "Muerte · Inframundo · Transformación"
+  description: "Señor del Mictlán. Rige el tránsito hacia lo que viene después. No destrucción sino transformación profunda."
+
+Centeotl:
+  es: "Señor del Maíz"
+  keywords: "Maíz · Sustento · Renovación"
+  description: "Dios del maíz y la subsistencia. Lo que nutre, crece y regresa cada ciclo."
+
+Tlaloc:
+  es: "Señor de la Lluvia"
+  keywords: "Lluvia · Abundancia · Tormenta"
+  description: "Rige las lluvias que fertilizan y las tormentas que destruyen. Abundancia impredecible."
+
+Quetzalcoatl:
+  es: "Serpiente Emplumada"
+  keywords: "Sabiduría · Viento · Creación"
+  description: "La serpiente que asciende. Puente entre lo terrestre y lo celeste, entre la materia y el conocimiento."
