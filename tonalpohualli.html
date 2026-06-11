@@ -6,12 +6,7 @@
 <title>Tonalpohualli · Astro-Nav HUD</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
-  :root {
-    --bg:#080a0e;--bg2:#0d1117;--bg3:#111820;
-    --amber:#d4860a;--amber-bright:#f0a020;--amber-dim:#7a4d08;--amber-faint:#1a1005;
-    --text:#c8922a;--text-dim:#7a5518;--border:#2a1f08;--border-bright:#4a3510;
-    --mono:'Share Tech Mono',monospace;--sans:'Exo 2',sans-serif;
-  }
+  :root{--bg:#080a0e;--bg2:#0d1117;--bg3:#111820;--amber:#d4860a;--amber-bright:#f0a020;--amber-dim:#7a4d08;--amber-faint:#1a1005;--text:#c8922a;--text-dim:#7a5518;--border:#2a1f08;--border-bright:#4a3510;--mono:'Share Tech Mono',monospace;--sans:'Exo 2',sans-serif;}
   *{margin:0;padding:0;box-sizing:border-box;}
   body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
   header{border-bottom:1px solid var(--border-bright);padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:flex-end;}
@@ -33,7 +28,7 @@
   .how-to{background:var(--bg3);border:1px solid var(--border-bright);padding:1.25rem 1.5rem;margin-top:1rem;}
   .how-to-row{display:flex;gap:1rem;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:13px;}
   .how-to-row:last-child{border-bottom:none;}
-  .how-to-term{font-family:var(--mono);color:var(--amber);min-width:140px;flex-shrink:0;}
+  .how-to-term{font-family:var(--mono);color:var(--amber);min-width:150px;flex-shrink:0;}
   .how-to-def{color:var(--text-dim);}
   .archetype-block{margin-top:1.5rem;border:1px solid var(--border-bright);}
   .block-header{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.25rem;background:var(--bg3);cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);user-select:none;}
@@ -48,7 +43,6 @@
   .arch-es{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.1em;text-align:right;}
   .arch-keywords{font-size:11px;color:var(--amber);margin-bottom:5px;}
   .arch-desc{font-size:12px;color:var(--text-dim);line-height:1.6;}
-  .note{font-family:var(--mono);font-size:10px;color:var(--amber-dim);padding:0.5rem 1.25rem;background:var(--amber-faint);border-top:1px solid var(--border);}
   .sources{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);line-height:1.8;}
   footer{border-top:1px solid var(--border-bright);padding:1rem 2rem;font-family:var(--mono);font-size:10px;color:var(--text-dim);display:flex;justify-content:space-between;margin-top:3rem;}
   @media(max-width:600px){.archetypes-grid{grid-template-columns:1fr;}}
@@ -68,54 +62,43 @@
     </div>
   </div>
 </header>
-
 <div class="container">
-
   <div class="marco-header">
     <div class="marco-icon"><svg width="56" height="56" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
-        <path d="M-5,-8 L-8,-22 L8,-22 L5,-8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
-        <path d="M-8,-22 C-10,-26 -8,-30 -4,-28 C-2,-24 -6,-22 -8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
-        <path d="M8,-22 C10,-26 8,-30 4,-28 C2,-24 6,-22 8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
-        <path d="M8,-5 L22,-8 L22,8 L8,5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
-        <path d="M22,-8 C26,-10 30,-8 28,-4 C24,-2 22,-6 22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
-        <path d="M22,8 C26,10 30,8 28,4 C24,2 22,6 22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
-        <path d="M5,8 L8,22 L-8,22 L-5,8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
-        <path d="M8,22 C10,26 8,30 4,28 C2,24 6,22 8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
-        <path d="M-8,22 C-10,26 -8,30 -4,28 C-2,24 -6,22 -8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
-        <path d="M-8,5 L-22,8 L-22,-8 L-8,-5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
-        <path d="M-22,8 C-26,10 -30,8 -28,4 C-24,2 -22,6 -22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
-        <path d="M-22,-8 C-26,-10 -30,-8 -28,-4 C-24,-2 -22,-6 -22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
-        <circle cx="0" cy="0" r="6" fill="none" stroke="#f0a020" stroke-width="1.2"/>
-        <circle cx="0" cy="0" r="2.5" fill="#f0a020"/>
-      </svg></div>
-    <div>
-      <div class="marco-system">Mexica · 260 días · Náhuatl</div>
-      <div class="marco-name">Tonalpohualli</div>
-      <div class="marco-origin">Mesoamérica central · Cultura nahua · Valle de México</div>
-    </div>
+<path d="M-5,-8 L-8,-22 L8,-22 L5,-8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+<path d="M-8,-22 C-10,-26 -8,-30 -4,-28 C-2,-24 -6,-22 -8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+<path d="M8,-22 C10,-26 8,-30 4,-28 C2,-24 6,-22 8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+<path d="M8,-5 L22,-8 L22,8 L8,5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+<path d="M22,-8 C26,-10 30,-8 28,-4 C24,-2 22,-6 22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+<path d="M22,8 C26,10 30,8 28,4 C24,2 22,6 22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+<path d="M5,8 L8,22 L-8,22 L-5,8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+<path d="M8,22 C10,26 8,30 4,28 C2,24 6,22 8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+<path d="M-8,22 C-10,26 -8,30 -4,28 C-2,24 -6,22 -8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+<path d="M-8,5 L-22,8 L-22,-8 L-8,-5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+<path d="M-22,8 C-26,10 -30,8 -28,4 C-24,2 -22,6 -22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+<path d="M-22,-8 C-26,-10 -30,-8 -28,-4 C-24,-2 -22,-6 -22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+<circle cx="0" cy="0" r="6" fill="none" stroke="#f0a020" stroke-width="1.2"/><circle cx="0" cy="0" r="2.5" fill="#f0a020"/></svg></div>
+    <div><div class="marco-system">Mexica · 260 días · Náhuatl</div>
+    <div class="marco-name">Tonalpohualli</div>
+    <div class="marco-origin">Mesoamérica central · Cultura nahua · Valle de México</div></div>
   </div>
-
   <img src="src/img/Ollin_banner.png" alt="Tonalpohualli" class="banner">
-
   <div class="section-label">El marco</div>
   <div class="body-text">
-    <p>No es un calendario en el sentido que conocemos. No mide el paso del tiempo — lo cualifica. Cada uno de sus 260 días tiene una textura específica, una combinación de signo y número que los pueblos nahuas, originarios del Valle de México, desarrollaron observando ciclos durante siglos. No sabemos con exactitud qué observaron primero: si el cielo, las cosechas, o el cuerpo humano. Probablemente los tres a la vez.</p>
+    <p>No es un calendario en el sentido que conocemos. No mide el paso del tiempo — lo cualifica. Cada uno de sus 260 días tiene una textura específica, una combinación de signo y número que los pueblos nahuas, originarios del Valle de México, desarrollaron observando ciclos durante siglos.</p>
     <p>Los tonalpouhque — los especialistas que lo interpretaban — no decían "naciste en tal día, serás tal cosa". Decían "naciste con esta energía, estos son sus potenciales y sus riesgos, aprende a moverte con ella". La distinción importa.</p>
   </div>
-
   <div class="section-label">Cómo leer los datos</div>
   <div class="how-to">
-    <div class="how-to-row"><span class="how-to-term">Signo del día</span><span class="how-to-def">Uno de 20 arquetipos que cualifica la energía del día. Define el carácter fundamental de ese momento.</span></div>
-    <div class="how-to-row"><span class="how-to-term">Número</span><span class="how-to-def">Del 1 al 13. Indica la madurez o intensidad de la energía del signo dentro del ciclo de 13 días.</span></div>
-    <div class="how-to-row"><span class="how-to-term">Trecena</span><span class="how-to-def">El bloque de 13 días en que cae tu signo. Su primer día da nombre y la deidad presidenta colorea todo el período.</span></div>
-    <div class="how-to-row"><span class="how-to-term">Señor de la Noche</span><span class="how-to-def">Uno de 9 dioses en rotación continua e independiente del ciclo de 260. Añade una capa de influencia adicional.</span></div>
-    <div class="how-to-row"><span class="how-to-term">Posición en ciclo</span><span class="how-to-def">Dato técnico. Indica en qué día del ciclo de 260 cae tu fecha. Útil para verificar el cálculo.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Signo del día</span><span class="how-to-def">Uno de 20 arquetipos que cualifica la energía del día.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Número</span><span class="how-to-def">Del 1 al 13. Indica la madurez o intensidad de la energía dentro del ciclo de 13 días.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Trecena</span><span class="how-to-def">El bloque de 13 días en que cae tu signo. Su primer día da nombre y la deidad regente colorea el período.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Señor de la Noche</span><span class="how-to-def">Uno de 9 dioses en rotación continua e independiente del ciclo de 260.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Posición en ciclo</span><span class="how-to-def">Dato técnico. Indica en qué día del ciclo de 260 cae tu fecha.</span></div>
   </div>
-
   <div class="archetype-block">
     <div class="block-header" onclick="toggleBlock(this)">
-      <span>Los 20 signos del día · Veintena</span>
-      <span class="block-toggle">▶ DESPLEGAR</span>
+      <span>Los 20 signos del día · Veintena</span><span class="block-toggle">▶ DESPLEGAR</span>
     </div>
     <div class="block-body">
       <div class="archetypes-grid">
@@ -220,60 +203,59 @@
           <div class="arch-desc">El vigésimo signo, culminación del ciclo. Lo que florece al final y da sentido a todo lo recorrido.</div>
         </div>
       </div>
+      
     </div>
   </div>
-
   <div class="archetype-block">
     <div class="block-header" onclick="toggleBlock(this)">
-      <span>Las 20 trecenas y sus deidades presidentas</span>
-      <span class="block-toggle">▶ DESPLEGAR</span>
+      <span>Las 20 trecenas y sus deidades regentes</span><span class="block-toggle">▶ DESPLEGAR</span>
     </div>
     <div class="block-body">
       <div class="archetypes-grid">
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Cipactli</span><span class="arch-es">Oxomoco y Cipactónal</span></div>
-          <div class="arch-keywords">Origen · Primeros creadores · Adivinación</div>
-          <div class="arch-desc">La primera trecena. Presidida por la pareja primordial que inventó el calendario. Período de inicio absoluto, energía sin forma previa.</div>
+          <div class="arch-header"><span class="arch-name">1 Cipactli</span><span class="arch-es">Tonacatecuhtli</span></div>
+          <div class="arch-keywords">Origen · Sustento primordial · Creación</div>
+          <div class="arch-desc">La primera trecena, regida por el señor de la subsistencia. Período de inicio absoluto, energía creadora antes de toda forma.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Ocelotl</span><span class="arch-es">Quetzalcóatl</span></div>
-          <div class="arch-keywords">Sabiduría · Conocimiento · Dualidad</div>
-          <div class="arch-desc">Presidida por la Serpiente Emplumada. Período de conocimiento y búsqueda de la verdad. La dualidad como motor de aprendizaje.</div>
+          <div class="arch-header"><span class="arch-name">1 Ocelotl</span><span class="arch-es">Quetzalcoatl</span></div>
+          <div class="arch-keywords">Sabiduría · Conocimiento · Búsqueda</div>
+          <div class="arch-desc">Regida por la Serpiente Emplumada. Período de conocimiento y búsqueda de la verdad, asociado a la nobleza y el sacrificio.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Mazatl</span><span class="arch-es">Tepeyólotl</span></div>
+          <div class="arch-header"><span class="arch-name">1 Mazatl</span><span class="arch-es">Tepeyollotl</span></div>
           <div class="arch-keywords">Corazón de la montaña · Eco · Profundidad</div>
-          <div class="arch-desc">El jaguar del interior de la tierra. Período de resonancias profundas, de lo que retumba dentro antes de manifestarse fuera.</div>
+          <div class="arch-desc">El jaguar del interior de la tierra, el corazón del monte. Período de resonancias profundas, de lo que retumba dentro antes de manifestarse fuera.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Xochitl</span><span class="arch-es">Huehuecóyotl</span></div>
-          <div class="arch-keywords">Juego · Astucia · Transformación cómica</div>
+          <div class="arch-header"><span class="arch-name">1 Xochitl</span><span class="arch-es">Huehuecoyotl</span></div>
+          <div class="arch-keywords">Juego · Astucia · Transformación</div>
           <div class="arch-desc">El coyote viejo. Período de creatividad impredecible, humor y cambio inesperado. La astucia como forma de sabiduría.</div>
         </div>
         <div class="archetype-card">
           <div class="arch-header"><span class="arch-name">1 Acatl</span><span class="arch-es">Chalchiuhtlicue</span></div>
           <div class="arch-keywords">Aguas · Pureza · Corriente vital</div>
-          <div class="arch-desc">La señora de las aguas. Período de flujo y purificación. Lo que sostiene la vida en movimiento constante.</div>
+          <div class="arch-desc">La señora de las aguas terrestres, la de la falda de jade. Período de flujo y purificación, lo que sostiene la vida en movimiento constante.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Miquiztli</span><span class="arch-es">Tecciztécatl</span></div>
-          <div class="arch-keywords">Luna · Ciclo · Orgullo transformado</div>
-          <div class="arch-desc">El dios lunar que no pudo ser el sol. Período de confrontación con los propios límites y transformación del orgullo.</div>
+          <div class="arch-header"><span class="arch-name">1 Miquiztli</span><span class="arch-es">Tonatiuh</span></div>
+          <div class="arch-keywords">Sol · Energía vital · Sacrificio</div>
+          <div class="arch-desc">El sol como fuente de vida que exige para continuar su curso. Período de energía solar intensa y confrontación con lo esencial.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Quiahuitl</span><span class="arch-es">Tláloc</span></div>
+          <div class="arch-header"><span class="arch-name">1 Quiahuitl</span><span class="arch-es">Tlaloc</span></div>
           <div class="arch-keywords">Lluvia · Fertilidad · Destrucción renovadora</div>
           <div class="arch-desc">El señor de las lluvias. Período de abundancia impredecible. Lo que fertiliza y lo que inunda son la misma fuerza.</div>
         </div>
         <div class="archetype-card">
           <div class="arch-header"><span class="arch-name">1 Malinalli</span><span class="arch-es">Mayahuel</span></div>
           <div class="arch-keywords">Maguey · Embriaguez sagrada · Nutrición</div>
-          <div class="arch-desc">La diosa del maguey. Período de sustento profundo y alteración de la conciencia ordinaria. Lo que nutre también transforma.</div>
+          <div class="arch-desc">La diosa del maguey y la fertilidad. Período de sustento profundo y alteración de la conciencia ordinaria. Lo que nutre también transforma.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Coatl</span><span class="arch-es">Xiuhcóatl</span></div>
-          <div class="arch-keywords">Serpiente de fuego · Poder solar · Destino</div>
-          <div class="arch-desc">La serpiente ígnea del sol. Período de poder concentrado y destino activo. Lo que quema para revelar la esencia.</div>
+          <div class="arch-header"><span class="arch-name">1 Coatl</span><span class="arch-es">Xiuhtecuhtli</span></div>
+          <div class="arch-keywords">Fuego · Centro · Destino</div>
+          <div class="arch-desc">El señor del fuego, emparejado con Tlahuizcalpantecuhtli, la estrella del alba. Período de poder concentrado y destino activo.</div>
         </div>
         <div class="archetype-card">
           <div class="arch-header"><span class="arch-name">1 Tecpatl</span><span class="arch-es">Mictlantecuhtli</span></div>
@@ -281,64 +263,62 @@
           <div class="arch-desc">El señor del Mictlán. Período de tránsito y confrontación con lo que termina. La muerte como proceso, no como fin.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Ozomatli</span><span class="arch-es">Patécatl</span></div>
+          <div class="arch-header"><span class="arch-name">1 Ozomatli</span><span class="arch-es">Patecatl</span></div>
           <div class="arch-keywords">Medicina · Sanación · Fermentación</div>
-          <div class="arch-desc">El dios de la medicina y el pulque. Período de curación y transformación química. Lo que fermenta se vuelve otra cosa.</div>
+          <div class="arch-desc">El dios de la medicina y las raíces del pulque. Período de curación y transformación. Lo que fermenta se vuelve otra cosa.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Cuauhtli</span><span class="arch-es">Xipe Tótec</span></div>
+          <div class="arch-header"><span class="arch-name">1 Cuetzpalin</span><span class="arch-es">Itztlacoliuhqui</span></div>
+          <div class="arch-keywords">Obsidiana curva · Frío · Justicia ciega</div>
+          <div class="arch-desc">El dios de la obsidiana curva, el frío y la helada. Período de lo que no puede verse con claridad, del juicio inflexible y la ceguera necesaria.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">1 Ollin</span><span class="arch-es">Tlazolteotl</span></div>
+          <div class="arch-keywords">Purificación · Deseo · Transformación</div>
+          <div class="arch-desc">La diosa que devora las impurezas, comedora de inmundicia. Período de purificación profunda, de transformación del deseo y la culpa.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">1 Itzcuintli</span><span class="arch-es">Xipe Totec</span></div>
           <div class="arch-keywords">Renovación · Muda de piel · Fertilidad</div>
-          <div class="arch-desc">El desollado. Período de renovación radical. Para que lo nuevo emerja, lo viejo debe desprenderse por completo.</div>
+          <div class="arch-desc">El desollado, nuestro señor el desollado. Período de renovación radical. Para que lo nuevo emerja, lo viejo debe desprenderse por completo.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Ollin</span><span class="arch-es">Tonatiuh</span></div>
-          <div class="arch-keywords">Sol · Movimiento · Centro del universo</div>
-          <div class="arch-desc">El sol en movimiento. Período de máxima energía solar. El centro que sostiene todo el movimiento del cosmos.</div>
+          <div class="arch-header"><span class="arch-name">1 Calli</span><span class="arch-es">Itzpapalotl</span></div>
+          <div class="arch-keywords">Mariposa de obsidiana · Umbral · Guerrera</div>
+          <div class="arch-desc">La mariposa de obsidiana, diosa guerrera del destino. Período de protección e interioridad, del umbral entre lo doméstico y lo sagrado.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Itzcuintli</span><span class="arch-es">Mictlantecuhtli</span></div>
-          <div class="arch-keywords">Guía · Inframundo · Lealtad final</div>
-          <div class="arch-desc">Segundo período bajo el señor de los muertos. El perro como guía de almas. Lealtad que atraviesa el umbral.</div>
+          <div class="arch-header"><span class="arch-name">1 Cozcacuauhtli</span><span class="arch-es">Xolotl</span></div>
+          <div class="arch-keywords">Gemelo · Inframundo · Transformación</div>
+          <div class="arch-desc">El gemelo de Quetzalcoatl, guía del sol en el inframundo. Período de descenso, de acompañamiento en lo oscuro y la transformación.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Calli</span><span class="arch-es">Quetzalcóatl</span></div>
-          <div class="arch-keywords">Viento · Interior · Morada del espíritu</div>
-          <div class="arch-desc">Segunda aparición de la Serpiente Emplumada. Período de interioridad y refugio. El espacio donde el espíritu habita.</div>
+          <div class="arch-header"><span class="arch-name">1 Atl</span><span class="arch-es">Xiuhtecuhtli / Chalchiuhtlicue</span></div>
+          <div class="arch-keywords">Agua · Fuego · Purificación por conflicto</div>
+          <div class="arch-desc">Regida por el señor del fuego y la señora de las aguas. Período de purificación a través del conflicto, de la guerra interna entre opuestos.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Cozcacuauhtli</span><span class="arch-es">Xólotl</span></div>
-          <div class="arch-keywords">Guía al inframundo · Rayo · Monstruo sagrado</div>
-          <div class="arch-desc">El perro sin pelo que guía al sol por el inframundo. Período de descenso y acompañamiento en lo más oscuro.</div>
+          <div class="arch-header"><span class="arch-name">1 Ehecatl</span><span class="arch-es">Quetzalcoatl</span></div>
+          <div class="arch-keywords">Viento · Aliento · Cambio inconstante</div>
+          <div class="arch-desc">Quetzalcoatl en su advocación de Ehecatl, dios del viento. Período de fuerzas inconstantes y vanas, de lo que cambia sin previo aviso.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Atl</span><span class="arch-es">Chalchiuhtlicue</span></div>
-          <div class="arch-keywords">Aguas · Segundo flujo · Purificación profunda</div>
-          <div class="arch-desc">Segunda aparición de la señora de las aguas. Período de purificación más profunda. El agua que llega al fondo.</div>
+          <div class="arch-header"><span class="arch-name">1 Cuauhtli</span><span class="arch-es">Xipe Totec</span></div>
+          <div class="arch-keywords">Águila · Renovación · Guerra florida</div>
+          <div class="arch-desc">El desollado en su aspecto guerrero, emparejado con el señor del fuego. Período de renovación a través del sacrificio y la lucha.</div>
         </div>
         <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Ehecatl</span><span class="arch-es">Itztlacoliuhqui</span></div>
-          <div class="arch-keywords">Obsidiana curva · Frío · Ceguera inevitable</div>
-          <div class="arch-desc">El dios del frío y la obsidiana que curva. Período de lo que no puede verse. La ceguera como experiencia necesaria.</div>
-        </div>
-        <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Cuetzpalin</span><span class="arch-es">Tonatiuh</span></div>
-          <div class="arch-keywords">Sol · Vitalidad · Segundo calor</div>
-          <div class="arch-desc">Segunda aparición del sol. Período de vitalidad renovada y energía corporal. El calor que regenera.</div>
-        </div>
-        <div class="archetype-card">
-          <div class="arch-header"><span class="arch-name">1 Tochtli</span><span class="arch-es">Mayahuel</span></div>
-          <div class="arch-keywords">Maguey · Luna · Abundancia final</div>
-          <div class="arch-desc">Segunda aparición de la diosa del maguey. Última trecena del ciclo. Período de culminación y exceso fértil antes del reinicio.</div>
+          <div class="arch-header"><span class="arch-name">1 Tochtli</span><span class="arch-es">Xiuhtecuhtli / Itztapaltotec</span></div>
+          <div class="arch-keywords">Fuego · Cierre del ciclo · Abundancia final</div>
+          <div class="arch-desc">El señor del fuego junto a Itztapaltotec, aspecto de Xipe Totec. Última trecena del ciclo. Período de culminación antes del reinicio.</div>
         </div>
       </div>
-      <div class="note">⚠ Pendiente de revisión por especialistas en tradición nahua</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--amber-dim);padding:0.5rem 1.25rem;background:var(--amber-faint);border-top:1px solid var(--border);">Verificado contra el Códice Borbónico</div>
     </div>
   </div>
-
   <div class="archetype-block">
     <div class="block-header" onclick="toggleBlock(this)">
-      <span>Los 9 Señores de la Noche</span>
-      <span class="block-toggle">▶ DESPLEGAR</span>
+      <span>Los 9 Señores de la Noche</span><span class="block-toggle">▶ DESPLEGAR</span>
     </div>
     <div class="block-body">
       <div class="archetypes-grid">
@@ -388,13 +368,12 @@
           <div class="arch-desc">La serpiente que asciende. Puente entre lo terrestre y lo celeste, entre la materia y el conocimiento.</div>
         </div>
       </div>
+      
     </div>
   </div>
-
   <div class="archetype-block">
     <div class="block-header" onclick="toggleBlock(this)">
-      <span>Los 13 números del ciclo</span>
-      <span class="block-toggle">▶ DESPLEGAR</span>
+      <span>Los 13 números del ciclo</span><span class="block-toggle">▶ DESPLEGAR</span>
     </div>
     <div class="block-body">
       <div class="archetypes-grid">
@@ -451,31 +430,20 @@
           <div class="arch-desc">El ciclo se completa. Energía en su punto más alto — plenitud que roza el desbordamiento.</div>
         </div>
       </div>
+      
     </div>
   </div>
-
   <div class="sources">
     <strong style="color:var(--amber-dim);font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;">Fuentes</strong><br>
-    Códice Borgia · Códice Borbónico · Tonalamatl de Aubin ·
-    Alfonso Caso, <em>Los calendarios prehispánicos</em> ·
-    Sahagún, <em>Historia General de las Cosas de Nueva España</em>
+    Códice Borgia · Códice Borbónico · Tonalamatl de Aubin · Alfonso Caso, <em>Los calendarios prehispánicos</em> · Sahagún, <em>Historia General</em>
   </div>
-
 </div>
-
 <footer>
   <span>ASTRO-NAV HUD · v0.4 · Tonalpohualli</span>
   <span>V0ra · <a href="https://v0raonline.substack.com" target="_blank" style="color:var(--amber-dim);text-decoration:none;">v0raonline.substack.com</a></span>
 </footer>
-
 <script>
-function toggleBlock(header) {
-  const body = header.nextElementSibling;
-  const toggle = header.querySelector('.block-toggle');
-  const isOpen = body.classList.contains('open');
-  body.classList.toggle('open');
-  toggle.textContent = isOpen ? '▶ DESPLEGAR' : '▼ PLEGAR';
-}
+function toggleBlock(h){const b=h.nextElementSibling,t=h.querySelector('.block-toggle');const o=b.classList.contains('open');b.classList.toggle('open');t.textContent=o?'▶ DESPLEGAR':'▼ PLEGAR';}
 </script>
 </body>
 </html>

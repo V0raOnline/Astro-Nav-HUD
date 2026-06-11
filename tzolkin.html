@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tzolkin · Astro-Nav HUD</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+  :root{--bg:#080a0e;--bg2:#0d1117;--bg3:#111820;--amber:#d4860a;--amber-bright:#f0a020;--amber-dim:#7a4d08;--amber-faint:#1a1005;--text:#c8922a;--text-dim:#7a5518;--border:#2a1f08;--border-bright:#4a3510;--mono:'Share Tech Mono',monospace;--sans:'Exo 2',sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+  header{border-bottom:1px solid var(--border-bright);padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:flex-end;}
+  .system-id{font-family:var(--sans);font-weight:300;font-size:11px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;}
+  .system-title{font-family:var(--mono);font-size:22px;color:var(--amber-bright);letter-spacing:0.15em;line-height:1;}
+  .nav-links{display:flex;gap:1rem;}
+  .nav-link{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;border-bottom:1px solid var(--border-bright);padding-bottom:1px;transition:color 0.2s;}
+  .nav-link:hover{color:var(--amber-bright);}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem;}
+  .marco-header{display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border-bright);}
+  .marco-icon{flex-shrink:0;opacity:0.9;}
+  .marco-system{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;}
+  .marco-name{font-family:var(--sans);font-size:32px;font-weight:600;color:var(--amber-bright);line-height:1;}
+  .marco-origin{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-top:6px;font-style:italic;}
+  .banner{width:100%;max-height:200px;object-fit:cover;border:1px solid var(--border-bright);margin-bottom:2.5rem;}
+  .section-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:0.75rem;margin-top:2.5rem;}
+  .body-text{font-size:14px;line-height:1.8;color:var(--text);font-weight:300;}
+  .body-text p{margin-bottom:1rem;}
+  .how-to{background:var(--bg3);border:1px solid var(--border-bright);padding:1.25rem 1.5rem;margin-top:1rem;}
+  .how-to-row{display:flex;gap:1rem;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .how-to-row:last-child{border-bottom:none;}
+  .how-to-term{font-family:var(--mono);color:var(--amber);min-width:150px;flex-shrink:0;}
+  .how-to-def{color:var(--text-dim);}
+  .archetype-block{margin-top:1.5rem;border:1px solid var(--border-bright);}
+  .block-header{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.25rem;background:var(--bg3);cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);user-select:none;}
+  .block-header:hover{color:var(--amber);}
+  .block-toggle{font-size:10px;color:var(--amber-dim);}
+  .block-body{display:none;padding:1.25rem;background:var(--bg2);}
+  .block-body.open{display:block;}
+  .archetypes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);}
+  .archetype-card{background:var(--bg);padding:1rem 1.25rem;}
+  .arch-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;gap:0.5rem;}
+  .arch-name{font-family:var(--sans);font-size:15px;font-weight:600;color:var(--amber-bright);}
+  .arch-es{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.1em;text-align:right;}
+  .arch-keywords{font-size:11px;color:var(--amber);margin-bottom:5px;}
+  .arch-desc{font-size:12px;color:var(--text-dim);line-height:1.6;}
+  .sources{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);line-height:1.8;}
+  footer{border-top:1px solid var(--border-bright);padding:1rem 2rem;font-family:var(--mono);font-size:10px;color:var(--text-dim);display:flex;justify-content:space-between;margin-top:3rem;}
+  @media(max-width:600px){.archetypes-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="system-id">Sistema de Navegación Astrológica · v0.4</div>
+    <div style="display:flex;align-items:baseline;gap:1.5rem">
+      <div class="system-title">ASTRO-NAV HUD</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">← HUD</a>
+        <a href="about.html" class="nav-link">Sobre este proyecto</a>
+        <a href="overview.html" class="nav-link">Visión general</a>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="container">
+  <div class="marco-header">
+    <div class="marco-icon"><svg width="56" height="56" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+<polygon points="0,-22 16,-16 22,0 16,16 0,22 -16,16 -22,0 -16,-16" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+<polygon points="0,-11 11,0 0,11 -11,0" fill="none" stroke="#d4860a" stroke-width="1"/>
+<line x1="-2" y1="-22" x2="2" y2="-22" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+<circle cx="0" cy="0" r="3" fill="none" stroke="#f0a020" stroke-width="1"/><circle cx="0" cy="0" r="1" fill="#f0a020"/></svg></div>
+    <div><div class="marco-system">Maya · 260 días · Tradición viva</div>
+    <div class="marco-name">Tzolkin</div>
+    <div class="marco-origin">Mesoamérica · Tradición maya · Guatemala, México</div></div>
+  </div>
+  <img src="src/img/Tzolkin_banner.png" alt="Tzolkin" class="banner">
+  <div class="section-label">El marco</div>
+  <div class="body-text">
+    <p>Este sistema sigue vivo. No como reliquia académica ni como reconstrucción de códices — sino en comunidades k'iche' y kaqchikel de Guatemala donde los ajq'ijab, los guardianes del tiempo, mantienen la cuenta sin interrupciones hasta hoy. Eso lo distingue de casi todos los sistemas de esta herramienta.</p>
+    <p>El Tzolkin comparte con el Tonalpohualli la estructura de 260 días — mismo número, misma combinatoria de 20 signos y 13 números — pero emergió de otra tradición, otra lengua, otra cosmología. Que dos culturas sin contacto llegaran a la misma arquitectura temporal dice algo. No sabemos exactamente qué. Pero dice algo.</p>
+  </div>
+  <div class="section-label">Cómo leer los datos</div>
+  <div class="how-to">
+    <div class="how-to-row"><span class="how-to-term">Kin</span><span class="how-to-def">El signo del día, uno de 20. Combina con el número para formar tu sello.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Número (tono)</span><span class="how-to-def">Del 1 al 13. La frecuencia o intensidad galáctica del kin.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Trecena</span><span class="how-to-def">El bloque de 13 días en que cae tu kin, nombrado por su primer día.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Long Count</span><span class="how-to-def">La cuenta larga maya: días transcurridos desde el origen mítico (11 ago 3114 aC).</span></div>
+    <div class="how-to-row"><span class="how-to-term">Haab</span><span class="how-to-def">El calendario solar de 365 días, paralelo al Tzolkin.</span></div>
+  </div>
+  <div class="archetype-block">
+    <div class="block-header" onclick="toggleBlock(this)">
+      <span>Los 20 kins · Signos del día</span><span class="block-toggle">▶ DESPLEGAR</span>
+    </div>
+    <div class="block-body">
+      <div class="archetypes-grid">
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Imix</span><span class="arch-es">Dragón de Agua</span></div>
+          <div class="arch-keywords">Origen · Aguas primordiales · Receptividad</div>
+          <div class="arch-desc">Primer kin del ciclo. Conciencia que emerge del océano cósmico — potencial puro antes de tomar forma.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Ik</span><span class="arch-es">Viento</span></div>
+          <div class="arch-keywords">Espíritu · Comunicación esencial · Aliento</div>
+          <div class="arch-desc">El viento como aliento de vida. Conecta lo visible con lo invisible, lleva mensajes sin dejar rastro.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Akbal</span><span class="arch-es">Noche</span></div>
+          <div class="arch-keywords">Misterio · Sabiduría interior · Gestación</div>
+          <div class="arch-desc">La casa de la oscuridad sagrada. Conocimiento que no necesita luz exterior — emerge desde adentro.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Kan</span><span class="arch-es">Lagarto / Semilla</span></div>
+          <div class="arch-keywords">Semilla · Potencial latente · Germinación</div>
+          <div class="arch-desc">Lo que contiene toda posibilidad sin haberla manifestado aún. Energía en espera de su momento.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Chicchan</span><span class="arch-es">Serpiente</span></div>
+          <div class="arch-keywords">Fuerza vital · Kundalini · Canal</div>
+          <div class="arch-desc">Corriente de energía que asciende por el cuerpo. Poder que requiere un canal adecuado para no destruir.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Cimi</span><span class="arch-es">Muerte / Transformación</span></div>
+          <div class="arch-keywords">Muerte · Transición · Rendición necesaria</div>
+          <div class="arch-desc">El gran transformador maya. Soltar lo que ya cumplió su función — no resistencia sino entrega consciente.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Manik</span><span class="arch-es">Venado / Mano</span></div>
+          <div class="arch-keywords">Sanación · Herramienta · Servicio</div>
+          <div class="arch-desc">La mano como instrumento sagrado. Capacidad innata de sanar, construir y servir con precisión.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Lamat</span><span class="arch-es">Estrella / Conejo</span></div>
+          <div class="arch-keywords">Armonía · Abundancia venusina · Belleza</div>
+          <div class="arch-desc">Venus como estrella de la mañana y tarde. Belleza que equilibra, abundancia que comparte sin calcular.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Muluc</span><span class="arch-es">Agua / Luna</span></div>
+          <div class="arch-keywords">Memoria emocional · Luna · Flujo</div>
+          <div class="arch-desc">Las aguas de la memoria colectiva. Recoge, retiene y devuelve — todo deja huella en este signo.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Oc</span><span class="arch-es">Perro</span></div>
+          <div class="arch-keywords">Lealtad · Guía fiel · Justicia</div>
+          <div class="arch-desc">Compañero del camino y guardián de la ley. La fidelidad como práctica espiritual, no solo virtud social.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Chuen</span><span class="arch-es">Mono / Artesano</span></div>
+          <div class="arch-keywords">Maestro artesano · Tiempo creativo · Arte</div>
+          <div class="arch-desc">El tejedor del tiempo. El arte como forma genuina de conocimiento, no decoración sino comprensión.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Eb</span><span class="arch-es">Camino / Hierba</span></div>
+          <div class="arch-keywords">Senda · Destino · Lo humano</div>
+          <div class="arch-desc">La hierba del camino que se hace al andar. El destino no como imposición sino como construcción continua.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Ben</span><span class="arch-es">Caña / Maíz</span></div>
+          <div class="arch-keywords">Transmisión · Maestro · Canal</div>
+          <div class="arch-desc">La columna que conecta tierra y cielo. Vocación de enseñar, transmitir, servir de puente entre mundos.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Ix</span><span class="arch-es">Jaguar</span></div>
+          <div class="arch-keywords">Magia · Tierra sagrada · Misterio</div>
+          <div class="arch-desc">Guardián de los misterios de la tierra. Poder que opera en profundidad, fuera de lo que se puede ver.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Men</span><span class="arch-es">Águila</span></div>
+          <div class="arch-keywords">Visión global · Mente elevada · Horizonte</div>
+          <div class="arch-desc">La mente que vuela alto para ver el conjunto. Perspectiva que trasciende lo inmediato sin perder detalle.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Cib</span><span class="arch-es">Guerrero / Buitre</span></div>
+          <div class="arch-keywords">Perdón · Sabiduría antigua · Purificación</div>
+          <div class="arch-desc">El guerrero que ha visto suficiente para perdonar. Purificación a través del conocimiento acumulado.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Caban</span><span class="arch-es">Tierra / Movimiento</span></div>
+          <div class="arch-keywords">Tierra · Sincronía · Mente cósmica</div>
+          <div class="arch-desc">La tierra como mente viva. Resonancia con los ritmos del campo colectivo — sincronía como modo de ser.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Etznab</span><span class="arch-es">Espejo / Pedernal</span></div>
+          <div class="arch-keywords">Espejo · Verdad sin filtro · Corte preciso</div>
+          <div class="arch-desc">El espejo de obsidiana que no miente. Refleja sin distorsión, corta con precisión lo que necesita separarse.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Cauac</span><span class="arch-es">Tormenta / Lluvia</span></div>
+          <div class="arch-keywords">Catalizador · Purificación intensa · Tormenta</div>
+          <div class="arch-desc">La tormenta que limpia antes del amanecer. Transformación acelerada e inevitable — no se negocia.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Ahau</span><span class="arch-es">Señor / Sol</span></div>
+          <div class="arch-keywords">Sol · Amor incondicional · Plenitud</div>
+          <div class="arch-desc">El señor solar, vigésimo kin. Culminación del ciclo, conciencia que ha integrado todo el recorrido.</div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="archetype-block">
+    <div class="block-header" onclick="toggleBlock(this)">
+      <span>Los 13 números · Tonos galácticos</span><span class="block-toggle">▶ DESPLEGAR</span>
+    </div>
+    <div class="block-body">
+      <div class="archetypes-grid">
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">1</span><span class="arch-es">Inicio · Semilla</span></div>
+          <div class="arch-desc">El ciclo comienza. Energía en su estado más puro, sin forma todavía.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">2</span><span class="arch-es">Dualidad · Tensión creativa</span></div>
+          <div class="arch-desc">Primera fricción. Dos fuerzas que se definen mutuamente.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">3</span><span class="arch-es">Movimiento · Acción inicial</span></div>
+          <div class="arch-desc">La energía empieza a moverse. Primer impulso hacia la manifestación.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">4</span><span class="arch-es">Estabilidad · Forma</span></div>
+          <div class="arch-desc">La energía toma forma. Base sólida sobre la que construir.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">5</span><span class="arch-es">Centro · Fuerza</span></div>
+          <div class="arch-desc">Punto central del primer movimiento. Energía concentrada y potente.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">6</span><span class="arch-es">Flujo · Equilibrio dinámico</span></div>
+          <div class="arch-desc">Equilibrio en movimiento. La energía fluye sin esfuerzo cuando está alineada.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">7</span><span class="arch-es">Reflexión · Madurez media</span></div>
+          <div class="arch-desc">Punto de inflexión del ciclo. La energía se detiene a integrar lo recorrido.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">8</span><span class="arch-es">Armonía · Consolidación</span></div>
+          <div class="arch-desc">La forma está consolidada. Energía que ha encontrado su expresión natural.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">9</span><span class="arch-es">Expansión · Mayor intensidad</span></div>
+          <div class="arch-desc">La energía alcanza su mayor expansión. Potencial pleno antes de completarse.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">10</span><span class="arch-es">Manifestación · Realización</span></div>
+          <div class="arch-desc">Lo que empezó en el 1 se ha manifestado. La energía se vuelve visible.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">11</span><span class="arch-es">Madurez avanzada · Cerca de la plenitud</span></div>
+          <div class="arch-desc">Energía madura que no ha llegado aún al exceso. Alta intensidad sostenible.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">12</span><span class="arch-es">Complejidad · Antes del límite</span></div>
+          <div class="arch-desc">La energía se complejiza. Un paso antes de la saturación del ciclo.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name" style="font-size:20px">13</span><span class="arch-es">Culminación · Exceso y trascendencia</span></div>
+          <div class="arch-desc">El ciclo se completa. Energía en su punto más alto — plenitud que roza el desbordamiento.</div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="sources">
+    <strong style="color:var(--amber-dim);font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;">Fuentes</strong><br>
+    Popol Vuh · Chilam Balam · Barbara Tedlock, <em>Time and the Highland Maya</em> · Tradición k'iche' viva · Correlación GMT (584283)
+  </div>
+</div>
+<footer>
+  <span>ASTRO-NAV HUD · v0.4 · Tzolkin</span>
+  <span>V0ra · <a href="https://v0raonline.substack.com" target="_blank" style="color:var(--amber-dim);text-decoration:none;">v0raonline.substack.com</a></span>
+</footer>
+<script>
+function toggleBlock(h){const b=h.nextElementSibling,t=h.querySelector('.block-toggle');const o=b.classList.contains('open');b.classList.toggle('open');t.textContent=o?'▶ DESPLEGAR':'▼ PLEGAR';}
+</script>
+</body>
+</html>

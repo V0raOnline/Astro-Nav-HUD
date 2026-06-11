@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carta Natal · Astro-Nav HUD</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+  :root{--bg:#080a0e;--bg2:#0d1117;--bg3:#111820;--amber:#d4860a;--amber-bright:#f0a020;--amber-dim:#7a4d08;--amber-faint:#1a1005;--text:#c8922a;--text-dim:#7a5518;--border:#2a1f08;--border-bright:#4a3510;--mono:'Share Tech Mono',monospace;--sans:'Exo 2',sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+  header{border-bottom:1px solid var(--border-bright);padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:flex-end;}
+  .system-id{font-family:var(--sans);font-weight:300;font-size:11px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;}
+  .system-title{font-family:var(--mono);font-size:22px;color:var(--amber-bright);letter-spacing:0.15em;line-height:1;}
+  .nav-links{display:flex;gap:1rem;}
+  .nav-link{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;border-bottom:1px solid var(--border-bright);padding-bottom:1px;transition:color 0.2s;}
+  .nav-link:hover{color:var(--amber-bright);}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem;}
+  .marco-header{display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border-bright);}
+  .marco-icon{flex-shrink:0;opacity:0.9;}
+  .marco-system{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;}
+  .marco-name{font-family:var(--sans);font-size:32px;font-weight:600;color:var(--amber-bright);line-height:1;}
+  .marco-origin{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-top:6px;font-style:italic;}
+  .banner{width:100%;max-height:200px;object-fit:cover;border:1px solid var(--border-bright);margin-bottom:2.5rem;}
+  .section-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:0.75rem;margin-top:2.5rem;}
+  .body-text{font-size:14px;line-height:1.8;color:var(--text);font-weight:300;}
+  .body-text p{margin-bottom:1rem;}
+  .how-to{background:var(--bg3);border:1px solid var(--border-bright);padding:1.25rem 1.5rem;margin-top:1rem;}
+  .how-to-row{display:flex;gap:1rem;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .how-to-row:last-child{border-bottom:none;}
+  .how-to-term{font-family:var(--mono);color:var(--amber);min-width:150px;flex-shrink:0;}
+  .how-to-def{color:var(--text-dim);}
+  .archetype-block{margin-top:1.5rem;border:1px solid var(--border-bright);}
+  .block-header{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.25rem;background:var(--bg3);cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);user-select:none;}
+  .block-header:hover{color:var(--amber);}
+  .block-toggle{font-size:10px;color:var(--amber-dim);}
+  .block-body{display:none;padding:1.25rem;background:var(--bg2);}
+  .block-body.open{display:block;}
+  .archetypes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);}
+  .archetype-card{background:var(--bg);padding:1rem 1.25rem;}
+  .arch-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;gap:0.5rem;}
+  .arch-name{font-family:var(--sans);font-size:15px;font-weight:600;color:var(--amber-bright);}
+  .arch-es{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.1em;text-align:right;}
+  .arch-keywords{font-size:11px;color:var(--amber);margin-bottom:5px;}
+  .arch-desc{font-size:12px;color:var(--text-dim);line-height:1.6;}
+  .sources{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);line-height:1.8;}
+  footer{border-top:1px solid var(--border-bright);padding:1rem 2rem;font-family:var(--mono);font-size:10px;color:var(--text-dim);display:flex;justify-content:space-between;margin-top:3rem;}
+  @media(max-width:600px){.archetypes-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="system-id">Sistema de Navegación Astrológica · v0.4</div>
+    <div style="display:flex;align-items:baseline;gap:1.5rem">
+      <div class="system-title">ASTRO-NAV HUD</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">← HUD</a>
+        <a href="about.html" class="nav-link">Sobre este proyecto</a>
+        <a href="overview.html" class="nav-link">Visión general</a>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="container">
+  <div class="marco-header">
+    <div class="marco-icon"><svg width="56" height="56" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+<circle cx="0" cy="0" r="22" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+<circle cx="0" cy="0" r="14" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+<line x1="-22" y1="0" x2="22" y2="0" stroke="#d4860a" stroke-width="1"/>
+<line x1="0" y1="-22" x2="0" y2="22" stroke="#7a4d08" stroke-width="0.75"/>
+<circle cx="0" cy="0" r="2" fill="#f0a020"/></svg></div>
+    <div><div class="marco-system">Helenística · Tropical · Placidus</div>
+    <div class="marco-name">Carta Natal</div>
+    <div class="marco-origin">Mesopotamia · Grecia · Transmisión árabe y europea</div></div>
+  </div>
+  <img src="src/img/Helenista_banner.png" alt="Carta Natal" class="banner">
+  <div class="section-label">El marco</div>
+  <div class="body-text">
+    <p>Esta tradición llegó a occidente desde Babilonia, pasó por Grecia, fue sistematizada por Ptolomeo en el siglo II, sobrevivió la Edad Media en los textos árabes y volvió a Europa a través de Al-Andalus. Dos mil años de transmisión textual ininterrumpida.</p>
+    <p>Lo que calcula es la posición de los planetas en el momento exacto del nacimiento, vista desde el lugar exacto donde ocurrió. El ascendente — el punto más sensible de la carta — cambia cada cuatro minutos. La hora importa.</p>
+    <p>El zodíaco que usa es tropical: referenciado al equinoccio, al ciclo de las estaciones.</p>
+  </div>
+  <div class="section-label">Cómo leer los datos</div>
+  <div class="how-to">
+    <div class="how-to-row"><span class="how-to-term">Sol</span><span class="how-to-def">El signo solar. La identidad central, el propósito, lo que se expresa hacia fuera.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Luna</span><span class="how-to-def">El mundo emocional, lo instintivo, lo que nutre y protege.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Ascendente</span><span class="how-to-def">El signo que ascendía en el horizonte al nacer. La máscara, el primer contacto.</span></div>
+    <div class="how-to-row"><span class="how-to-term">MC (Medio Cielo)</span><span class="how-to-def">El punto más alto de la carta. Vocación, imagen pública, dirección vital.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Planetas</span><span class="how-to-def">Cada uno rige un área: Mercurio la mente, Venus el afecto, Marte la acción.</span></div>
+  </div>
+  <div class="archetype-block">
+    <div class="block-header" onclick="toggleBlock(this)">
+      <span>Los 12 signos del zodíaco tropical</span><span class="block-toggle">▶ DESPLEGAR</span>
+    </div>
+    <div class="block-body">
+      <div class="archetypes-grid">
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Aries</span><span class="arch-es">Fuego</span></div>
+          <div class="arch-keywords">Iniciativa · Fuego pionero · Comienzo</div>
+          <div class="arch-desc">Primer signo, inicio del ciclo solar. Energía que abre camino sin esperar consenso — fuerza del impulso puro.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Tauro</span><span class="arch-es">Tierra</span></div>
+          <div class="arch-keywords">Solidez · Sensorialidad · Persistencia</div>
+          <div class="arch-desc">La forma que da cuerpo a la energía. Construye lento, construye sólido. Resistencia natural al cambio no necesario.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Geminis</span><span class="arch-es">Aire</span></div>
+          <div class="arch-keywords">Dualidad · Comunicación · Adaptabilidad mental</div>
+          <div class="arch-desc">La mente que multiplica perspectivas. Velocidad conceptual y capacidad de conectar lo aparentemente inconexo.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Cancer</span><span class="arch-es">Agua</span></div>
+          <div class="arch-keywords">Protección · Memoria · Raíz emocional</div>
+          <div class="arch-desc">El caparazón que guarda lo esencial. Profunda memoria afectiva — lo que fue forma lo que es.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Leo</span><span class="arch-es">Fuego</span></div>
+          <div class="arch-keywords">Expresión · Dignidad solar · Generosidad</div>
+          <div class="arch-desc">El corazón que necesita expresarse. Creatividad que no pide permiso, orgullo legítimo en lo que se es.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Virgo</span><span class="arch-es">Tierra</span></div>
+          <div class="arch-keywords">Análisis · Servicio · Precisión</div>
+          <div class="arch-desc">La mente que distingue, ordena y mejora. Perfeccionismo al servicio del conjunto, no del ego.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Libra</span><span class="arch-es">Aire</span></div>
+          <div class="arch-keywords">Equilibrio · Relación · Justicia</div>
+          <div class="arch-desc">La balanza como principio ordenador. Busca el punto justo entre opuestos — no neutralidad sino armonía activa.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Escorpio</span><span class="arch-es">Agua</span></div>
+          <div class="arch-keywords">Profundidad · Transformación · Poder oculto</div>
+          <div class="arch-desc">Lo que opera bajo la superficie. Intensidad que regenera o destruye — rara vez deja las cosas como las encontró.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Sagitario</span><span class="arch-es">Fuego</span></div>
+          <div class="arch-keywords">Expansión · Búsqueda de sentido · Horizonte</div>
+          <div class="arch-desc">La flecha hacia lo lejano. Necesidad de comprender el conjunto, de encontrar la ley que une los fenómenos.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Capricornio</span><span class="arch-es">Tierra</span></div>
+          <div class="arch-keywords">Estructura · Autoridad · Legado</div>
+          <div class="arch-desc">La montaña que se escala con paciencia. Construye para que dure, actúa desde la responsabilidad del tiempo largo.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Acuario</span><span class="arch-es">Aire</span></div>
+          <div class="arch-keywords">Visión · Colectivo · Ruptura necesaria</div>
+          <div class="arch-desc">El portador de agua para todos. Innovación al servicio del futuro colectivo, no del beneficio individual.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Piscis</span><span class="arch-es">Agua</span></div>
+          <div class="arch-keywords">Disolución · Intuición · Compasión</div>
+          <div class="arch-desc">El océano de todo lo posible. Percepción que trasciende límites — recibe lo que los otros no pueden captar.</div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="sources">
+    <strong style="color:var(--amber-dim);font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;">Fuentes</strong><br>
+    Ptolomeo, <em>Tetrabiblos</em> · Tradición helenística · Cálculo planetario: astronomy-engine 2.1.19 · Casas Placidus
+  </div>
+</div>
+<footer>
+  <span>ASTRO-NAV HUD · v0.4 · Carta Natal</span>
+  <span>V0ra · <a href="https://v0raonline.substack.com" target="_blank" style="color:var(--amber-dim);text-decoration:none;">v0raonline.substack.com</a></span>
+</footer>
+<script>
+function toggleBlock(h){const b=h.nextElementSibling,t=h.querySelector('.block-toggle');const o=b.classList.contains('open');b.classList.toggle('open');t.textContent=o?'▶ DESPLEGAR':'▼ PLEGAR';}
+</script>
+</body>
+</html>

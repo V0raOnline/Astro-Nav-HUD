@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jyotish · Astro-Nav HUD</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+  :root{--bg:#080a0e;--bg2:#0d1117;--bg3:#111820;--amber:#d4860a;--amber-bright:#f0a020;--amber-dim:#7a4d08;--amber-faint:#1a1005;--text:#c8922a;--text-dim:#7a5518;--border:#2a1f08;--border-bright:#4a3510;--mono:'Share Tech Mono',monospace;--sans:'Exo 2',sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+  header{border-bottom:1px solid var(--border-bright);padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:flex-end;}
+  .system-id{font-family:var(--sans);font-weight:300;font-size:11px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;}
+  .system-title{font-family:var(--mono);font-size:22px;color:var(--amber-bright);letter-spacing:0.15em;line-height:1;}
+  .nav-links{display:flex;gap:1rem;}
+  .nav-link{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;border-bottom:1px solid var(--border-bright);padding-bottom:1px;transition:color 0.2s;}
+  .nav-link:hover{color:var(--amber-bright);}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem;}
+  .marco-header{display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border-bright);}
+  .marco-icon{flex-shrink:0;opacity:0.9;}
+  .marco-system{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;}
+  .marco-name{font-family:var(--sans);font-size:32px;font-weight:600;color:var(--amber-bright);line-height:1;}
+  .marco-origin{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-top:6px;font-style:italic;}
+  .banner{width:100%;max-height:200px;object-fit:cover;border:1px solid var(--border-bright);margin-bottom:2.5rem;}
+  .section-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:0.75rem;margin-top:2.5rem;}
+  .body-text{font-size:14px;line-height:1.8;color:var(--text);font-weight:300;}
+  .body-text p{margin-bottom:1rem;}
+  .how-to{background:var(--bg3);border:1px solid var(--border-bright);padding:1.25rem 1.5rem;margin-top:1rem;}
+  .how-to-row{display:flex;gap:1rem;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .how-to-row:last-child{border-bottom:none;}
+  .how-to-term{font-family:var(--mono);color:var(--amber);min-width:150px;flex-shrink:0;}
+  .how-to-def{color:var(--text-dim);}
+  .archetype-block{margin-top:1.5rem;border:1px solid var(--border-bright);}
+  .block-header{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.25rem;background:var(--bg3);cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);user-select:none;}
+  .block-header:hover{color:var(--amber);}
+  .block-toggle{font-size:10px;color:var(--amber-dim);}
+  .block-body{display:none;padding:1.25rem;background:var(--bg2);}
+  .block-body.open{display:block;}
+  .archetypes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);}
+  .archetype-card{background:var(--bg);padding:1rem 1.25rem;}
+  .arch-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;gap:0.5rem;}
+  .arch-name{font-family:var(--sans);font-size:15px;font-weight:600;color:var(--amber-bright);}
+  .arch-es{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.1em;text-align:right;}
+  .arch-keywords{font-size:11px;color:var(--amber);margin-bottom:5px;}
+  .arch-desc{font-size:12px;color:var(--text-dim);line-height:1.6;}
+  .sources{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);line-height:1.8;}
+  footer{border-top:1px solid var(--border-bright);padding:1rem 2rem;font-family:var(--mono);font-size:10px;color:var(--text-dim);display:flex;justify-content:space-between;margin-top:3rem;}
+  @media(max-width:600px){.archetypes-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="system-id">Sistema de Navegación Astrológica · v0.4</div>
+    <div style="display:flex;align-items:baseline;gap:1.5rem">
+      <div class="system-title">ASTRO-NAV HUD</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">← HUD</a>
+        <a href="about.html" class="nav-link">Sobre este proyecto</a>
+        <a href="overview.html" class="nav-link">Visión general</a>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="container">
+  <div class="marco-header">
+    <div class="marco-icon"><svg width="56" height="56" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+<rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#4a3510" stroke-width="0.75"/>
+<polygon points="0,-20 17,10 -17,10" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+<polygon points="0,20 17,-10 -17,-10" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+<circle cx="0" cy="0" r="2" fill="#f0a020"/></svg></div>
+    <div><div class="marco-system">Védica · Sidérea · Ayanamsa Lahiri</div>
+    <div class="marco-name">Jyotish</div>
+    <div class="marco-origin">Subcontinente indio · Tradición védica · Ininterrumpida hasta hoy</div></div>
+  </div>
+  <img src="src/img/Jyotish_banner.png" alt="Jyotish" class="banner">
+  <div class="section-label">El marco</div>
+  <div class="body-text">
+    <p>Jyotish significa literalmente "ciencia de la luz". Surge de los Vedangas — las disciplinas auxiliares de los Vedas — originarias del subcontinente indio, en la tradición que nos llega desde los textos sánscritos más antiguos, desarrolladas a lo largo del segundo milenio antes de nuestra era. Su propósito original era calcular las fechas exactas para los rituales. La precisión no era opcional.</p>
+    <p>Usa el zodíaco sidéreo: referenciado a las estrellas fijas, no al equinoccio. Aunque comparte los nombres de los signos con la astrología occidental, las posiciones planetarias difieren porque parten de una geometría distinta. Son preguntas distintas hechas al mismo cielo.</p>
+    <p>El sistema de dashas — períodos planetarios que determinan qué energía predomina en cada etapa de la vida — no tiene equivalente directo en ningún otro sistema de esta herramienta.</p>
+  </div>
+  <div class="section-label">Cómo leer los datos</div>
+  <div class="how-to">
+    <div class="how-to-row"><span class="how-to-term">Lagna (Ascendente)</span><span class="how-to-def">El rashi que ascendía al nacer. La base de toda la carta védica.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Rashi</span><span class="how-to-def">El signo sidéreo donde cae cada planeta. Uno de 12.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Nakshatra</span><span class="how-to-def">La mansión lunar, una de 27. Define matices muy específicos del carácter.</span></div>
+    <div class="how-to-row"><span class="how-to-term">Mahadasha</span><span class="how-to-def">El período planetario activo según el sistema Vimshottari. Marca la energía dominante de cada etapa vital.</span></div>
+  </div>
+  <div class="archetype-block">
+    <div class="block-header" onclick="toggleBlock(this)">
+      <span>Los 12 rashis · Signos sidéreos</span><span class="block-toggle">▶ DESPLEGAR</span>
+    </div>
+    <div class="block-body">
+      <div class="archetypes-grid">
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Mesha</span><span class="arch-es">Marte</span></div>
+          <div class="arch-keywords">Dharma del guerrero · Acción directa · Iniciativa</div>
+          <div class="arch-desc">Primer rashi, regido por Marte. Energía que actúa antes de deliberar. Capacidad de abrir camino donde no lo hay — valentía como modo de ser.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Vrishabha</span><span class="arch-es">Venus</span></div>
+          <div class="arch-keywords">Estabilidad · Belleza material · Acumulación paciente</div>
+          <div class="arch-desc">Rashi de Venus. Construye con calma, valora la permanencia. Encuentra lo sagrado en lo sensorial y lo concreto.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Mithuna</span><span class="arch-es">Mercurio</span></div>
+          <div class="arch-keywords">Intelecto · Dualidad · Comunicación</div>
+          <div class="arch-desc">Rashi de Mercurio. Mente que recoge información de múltiples fuentes y las conecta con agilidad. La palabra como herramienta principal.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Kataka</span><span class="arch-es">Luna</span></div>
+          <div class="arch-keywords">Nutrición · Memoria profunda · Protección</div>
+          <div class="arch-desc">Rashi lunar. Profundamente receptivo, retiene todo lo que toca. La protección del hogar y el linaje como vocación.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Simha</span><span class="arch-es">Sol</span></div>
+          <div class="arch-keywords">Autoridad solar · Dignidad · Expresión plena</div>
+          <div class="arch-desc">Rashi solar. La autoridad aquí es natural, no conquistada. Necesita expresarse con plenitud — la contención no es su modo.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Kanya</span><span class="arch-es">Mercurio</span></div>
+          <div class="arch-keywords">Discernimiento · Pureza · Servicio preciso</div>
+          <div class="arch-desc">El Mercurio analítico. Distingue con precisión, sirve con meticulosidad. Busca la perfección funcional, no la ornamental.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Tula</span><span class="arch-es">Venus</span></div>
+          <div class="arch-keywords">Dharma social · Justicia · Equilibrio activo</div>
+          <div class="arch-desc">Exaltación de Saturno. Busca la justicia como principio ordenador. El equilibrio no como neutralidad sino como trabajo constante.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Vrischika</span><span class="arch-es">Marte</span></div>
+          <div class="arch-keywords">Transformación radical · Profundidad · Ocultismo</div>
+          <div class="arch-desc">Marte en su forma profunda y oculta. Transforma radicalmente lo que toca. Opera bajo la superficie con una intensidad que no necesita mostrarse.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Dhanus</span><span class="arch-es">Júpiter</span></div>
+          <div class="arch-keywords">Sabiduría · Dharma · Expansión del conocimiento</div>
+          <div class="arch-desc">Rashi de Júpiter. Busca la verdad más allá de lo inmediato. Filosofía, ley y comprensión universal como territorio natural.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Makara</span><span class="arch-es">Saturno</span></div>
+          <div class="arch-keywords">Disciplina kármica · Estructura · Legado duradero</div>
+          <div class="arch-desc">Exaltación de Marte. Saturno construye aquí con la mayor paciencia. Lo que se logra en Makara está construido para atravesar generaciones.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Kumbha</span><span class="arch-es">Saturno</span></div>
+          <div class="arch-keywords">Servicio colectivo · Desapego · Ruptura necesaria</div>
+          <div class="arch-desc">Saturno en su dimensión social. Sirve al conjunto con desapego. Rompe las estructuras que ya no funcionan — no por destruir sino por necesidad.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Mina</span><span class="arch-es">Júpiter</span></div>
+          <div class="arch-keywords">Moksha · Disolución · Compasión sin límites</div>
+          <div class="arch-desc">Exaltación de Venus. Júpiter en su forma más expansiva. La disolución del ego hacia algo mayor — no pérdida sino apertura.</div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="archetype-block">
+    <div class="block-header" onclick="toggleBlock(this)">
+      <span>Las 27 nakshatras · Mansiones lunares</span><span class="block-toggle">▶ DESPLEGAR</span>
+    </div>
+    <div class="block-body">
+      <div class="archetypes-grid">
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Ashwini</span><span class="arch-es">Ketu</span></div>
+          <div class="arch-keywords">Velocidad · Sanación · Iniciación</div>
+          <div class="arch-desc">Primera nakshatra. Los gemelos divinos del amanecer, sanadores cósmicos. Energía rápida que inicia y cura.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Bharani</span><span class="arch-es">Venus</span></div>
+          <div class="arch-keywords">Contención · Transformación · Carga vital</div>
+          <div class="arch-desc">Porta la carga de lo que nace y muere. Capacidad de contener fuerzas extremas — creación y destrucción a la vez.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Krittika</span><span class="arch-es">Sol</span></div>
+          <div class="arch-keywords">Fuego purificador · Corte · Determinación</div>
+          <div class="arch-desc">Las Pléyades como espadas de fuego. Quema lo impuro para revelar la esencia. Determinación que no cede.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Rohini</span><span class="arch-es">Luna</span></div>
+          <div class="arch-keywords">Fertilidad · Belleza · Crecimiento natural</div>
+          <div class="arch-desc">La más favorecida de la Luna. Creatividad que florece con abundancia natural, belleza que atrae sin esfuerzo.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Mrigashira</span><span class="arch-es">Marte</span></div>
+          <div class="arch-keywords">Búsqueda · Sensibilidad fina · Inquietud</div>
+          <div class="arch-desc">El ciervo que busca sin descanso. Mente delicada que explora sin cesar — percepción aguda, nunca satisfecha.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Ardra</span><span class="arch-es">Rahu</span></div>
+          <div class="arch-keywords">Tormenta · Renovación · Ruptura necesaria</div>
+          <div class="arch-desc">La estrella de la tormenta. Destruye estructuras caducas para crear espacio — transformación sin anestesia.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Punarvasu</span><span class="arch-es">Júpiter</span></div>
+          <div class="arch-keywords">Retorno · Renovación · Bondad</div>
+          <div class="arch-desc">El arco que vuelve a casa. Recuperación tras la adversidad, capacidad de empezar de nuevo con sabiduría.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Pushya</span><span class="arch-es">Saturno</span></div>
+          <div class="arch-keywords">Nutrición · Protección · Auspicio</div>
+          <div class="arch-desc">Considerada la nakshatra más auspiciosa. Nutre, sostiene y da sin calcular — el maestro que cuida al discípulo.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Ashlesha</span><span class="arch-es">Mercurio</span></div>
+          <div class="arch-keywords">Penetración · Kundalini · Percepción profunda</div>
+          <div class="arch-desc">La serpiente que abraza y penetra. Percepción que llega al núcleo de las cosas — puede sanar o intoxicar.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Magha</span><span class="arch-es">Ketu</span></div>
+          <div class="arch-keywords">Trono ancestral · Autoridad innata · Linaje</div>
+          <div class="arch-desc">La sala del trono vacío. Autoridad que no se toma — se reconoce. Conexión con el poder del linaje y los ancestros.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Purva Phalguni</span><span class="arch-es">Venus</span></div>
+          <div class="arch-keywords">Placer · Creatividad · Descanso fértil</div>
+          <div class="arch-desc">El descanso como acto sagrado. Gozo de la vida, creatividad que fluye desde el disfrute, no desde el esfuerzo.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Uttara Phalguni</span><span class="arch-es">Sol</span></div>
+          <div class="arch-keywords">Patronazgo · Generosidad estructurada · Contrato</div>
+          <div class="arch-desc">Da con estructura y recibe con dignidad. El mecenas que sostiene sin perder autoridad propia.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Hasta</span><span class="arch-es">Luna</span></div>
+          <div class="arch-keywords">Destreza · Manifestación · Habilidad</div>
+          <div class="arch-desc">La mano que hace. Capacidad de materializar con precisión lo que la mente concibe — artesanía sagrada.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Chitra</span><span class="arch-es">Marte</span></div>
+          <div class="arch-keywords">Brillo · Arte · Arquitectura de la forma</div>
+          <div class="arch-desc">La estrella brillante del artesano divino. Belleza estructurada con precisión — forma que expresa esencia.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Swati</span><span class="arch-es">Rahu</span></div>
+          <div class="arch-keywords">Independencia · Flexibilidad · Adaptación</div>
+          <div class="arch-desc">El brote que se dobla en el viento sin romperse. Independencia que se adapta sin perder su naturaleza.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Vishakha</span><span class="arch-es">Júpiter</span></div>
+          <div class="arch-keywords">Propósito · Determinación · Meta única</div>
+          <div class="arch-desc">Energía concentrada hacia un objetivo a largo plazo. No descansa hasta alcanzar lo que se propone.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Anuradha</span><span class="arch-es">Saturno</span></div>
+          <div class="arch-keywords">Devoción · Amistad profunda · Éxito en lo lejano</div>
+          <div class="arch-desc">La estrella de la amistad y la devoción. Lealtad que atraviesa distancias y el tiempo sin desgastarse.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Jyeshtha</span><span class="arch-es">Mercurio</span></div>
+          <div class="arch-keywords">Madurez · Liderazgo · Protección de los menores</div>
+          <div class="arch-desc">La mayor entre las estrellas. Responsabilidad del que ha vivido suficiente para proteger a los que vienen detrás.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Mula</span><span class="arch-es">Ketu</span></div>
+          <div class="arch-keywords">Raíz · Disolución necesaria · Centro galáctico</div>
+          <div class="arch-desc">Apunta al centro de la galaxia. Desintegra para llegar a la raíz de todo — no destruye por destruir sino para revelar.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Purva Ashadha</span><span class="arch-es">Venus</span></div>
+          <div class="arch-keywords">Purificación · Invencibilidad · Preparación</div>
+          <div class="arch-desc">La que purifica antes de la victoria. Limpia, fortalece y prepara el terreno — la batalla comienza ya ganada.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Uttara Ashadha</span><span class="arch-es">Sol</span></div>
+          <div class="arch-keywords">Victoria universal · Integridad · Permanencia</div>
+          <div class="arch-desc">Victoria que se construye sobre principios sólidos. Lo que logra aquí dura — no hay victoria a medias.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Shravana</span><span class="arch-es">Luna</span></div>
+          <div class="arch-keywords">Escucha · Aprendizaje · Conexión</div>
+          <div class="arch-desc">La nakshatra del oído que recibe. La sabiduría llega a través de escuchar — enseña conectando lo separado.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Dhanishtha</span><span class="arch-es">Marte</span></div>
+          <div class="arch-keywords">Abundancia · Ritmo · Prosperidad musical</div>
+          <div class="arch-desc">La flauta de Krishna. Prosperidad que fluye con el ritmo del cosmos — no se fuerza, se sintoniza.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Shatabhisha</span><span class="arch-es">Rahu</span></div>
+          <div class="arch-keywords">Sanación oculta · Misterio · Soledad fértil</div>
+          <div class="arch-desc">Los cien médicos. Sana desde el conocimiento que no se exhibe — la curación más profunda opera en silencio.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Purva Bhadrapada</span><span class="arch-es">Júpiter</span></div>
+          <div class="arch-keywords">Fuego transformador · Visión dual · Radicalidad</div>
+          <div class="arch-desc">El hombre de dos caras que ve ambos lados antes de actuar. Transformación intensa que no da marcha atrás.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Uttara Bhadrapada</span><span class="arch-es">Saturno</span></div>
+          <div class="arch-keywords">Profundidad · Sabiduría de las aguas · Lluvia</div>
+          <div class="arch-desc">La serpiente de las aguas profundas. Sabiduría que emerge de lo más oscuro — lenta, sólida, permanente.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-header"><span class="arch-name">Revati</span><span class="arch-es">Mercurio</span></div>
+          <div class="arch-keywords">Tránsito · Protección · Final del ciclo</div>
+          <div class="arch-desc">El pastor que guía al rebaño al final del camino. Cuida el paso hacia el nuevo ciclo — cierre que es umbral.</div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="sources">
+    <strong style="color:var(--amber-dim);font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;">Fuentes</strong><br>
+    Brihat Parashara Hora Shastra · Brihat Jataka (Varahamihira) · Ayanamsa Lahiri · Sistema Vimshottari Dasha
+  </div>
+</div>
+<footer>
+  <span>ASTRO-NAV HUD · v0.4 · Jyotish</span>
+  <span>V0ra · <a href="https://v0raonline.substack.com" target="_blank" style="color:var(--amber-dim);text-decoration:none;">v0raonline.substack.com</a></span>
+</footer>
+<script>
+function toggleBlock(h){const b=h.nextElementSibling,t=h.querySelector('.block-toggle');const o=b.classList.contains('open');b.classList.toggle('open');t.textContent=o?'▶ DESPLEGAR':'▼ PLEGAR';}
+</script>
+</body>
+</html>
