@@ -550,7 +550,7 @@ const TONAL_SIGNS=[
 ];
 const LORDS_NIGHT=["Xiuhtecuhtli","Tlaltecuhtli","Chalchiuhtlicue","Tonatiuh","Tlazolteotl",
   "Mictlantecuhtli","Centeotl","Tlaloc","Quetzalcoatl"];
-const T_ANCHOR_JDN=2276849,T_ANCHOR_POS=105;
+const T_ANCHOR_JDN=2276828,T_ANCHOR_POS=105;
 
 // ─── TZOLKIN ──────────────────────────────────────────────────────────────────
 const TZOL_SIGNS=[
@@ -615,7 +615,7 @@ function calcTonal(y,m,d){
   const tn=Math.floor((pos-1)/13);
   const trecenaStart=tn*13+1;
   const ts=(trecenaStart-1)%20;
-  return{pos,num,sign:TONAL_SIGNS[si],trecenaSign:TONAL_SIGNS[ts],trecenaDay:num,lord:LORDS_NIGHT[j%9]};
+  return{pos,num,sign:TONAL_SIGNS[si],trecenaSign:TONAL_SIGNS[ts],trecenaDay:num,lord:LORDS_NIGHT[(j+7)%9]};
 }
 
 function calcTzolkin(y,m,d){

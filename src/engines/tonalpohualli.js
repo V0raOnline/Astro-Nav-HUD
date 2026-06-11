@@ -40,9 +40,11 @@ const LORDS_OF_NIGHT = [
   "Quetzalcoatl",    // 9
 ];
 
-// Anchor Alfonso Caso: 13 sep 1521 = día 105 (1 Coatl)
-// JDN correcto para 13 sep 1521 (juliano): 2276849
-const ANCHOR_JDN = 2276849;
+// Anchor Alfonso Caso: 1-Coatl = día 105 del ciclo
+// 13 ago 1521 juliano = 23 ago 1521 gregoriano = JDN 2276828
+// Validado contra azteccalendar.com (10 jun 2026 = 9 Quiahuitl)
+// y la Noche Triste (11 jul 1520 greg = 9 Ollin)
+const ANCHOR_JDN = 2276828;
 const ANCHOR_POS = 105;
 
 function julianDayNumber(year, month, day) {
@@ -66,7 +68,7 @@ function calculate(year, month, day) {
   const trecenaStart     = trecenaNum * 13 + 1;
   const trecenaSignIndex = (trecenaStart - 1) % 20;
 
-  const lordIndex = jdn % 9;
+  const lordIndex = (jdn + 7) % 9;
 
   return {
     pos,
@@ -81,7 +83,7 @@ function calculate(year, month, day) {
   };
 }
 
-// Validación: 03/04/1974 debe dar 11 Ollin, trecena 1 Mazatl
-// calculate(1974, 4, 3) → { number: 11, sign: { nahuatl: "Ollin" }, trecena: { sign: { nahuatl: "Mazatl" } } }
+// Validación: 03/04/1974 = 6 Tecpatl, trecena 1 Acatl, Señor Tlaloc
+// calculate(1974, 4, 3) → { number: 6, sign: { nahuatl: "Tecpatl" }, trecena: { sign: { nahuatl: "Acatl" } }, lordOfNight: "Tlaloc" }
 
 export { calculate, SIGNS, LORDS_OF_NIGHT };

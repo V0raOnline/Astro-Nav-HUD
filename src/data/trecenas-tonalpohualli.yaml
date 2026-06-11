@@ -1,0 +1,124 @@
+# Trecenas del Tonalpohualli — 20 bloques de 13 días
+# Cada trecena está regida por una deidad que colorea el período completo
+# Fuentes: Códice Borbónico, Tonalamatl de Aubin, Wikipedia (Trecena)
+# VERIFICADO contra tabla del Códice Borbónico (junio 2026)
+
+T1_Cipactli:
+  inicio: "1 Cipactli"
+  deidad: "Tonacatecuhtli"
+  keywords: "Origen · Sustento primordial · Creación"
+  description: "La primera trecena, regida por el señor de la subsistencia. Período de inicio absoluto, energía creadora antes de toda forma."
+
+T2_Ocelotl:
+  inicio: "1 Ocelotl"
+  deidad: "Quetzalcóatl"
+  keywords: "Sabiduría · Conocimiento · Dualidad"
+  description: "Presidida por la Serpiente Emplumada. Período de conocimiento y búsqueda de la verdad. La dualidad como motor de aprendizaje."
+
+T3_Mazatl:
+  inicio: "1 Mazatl"
+  deidad: "Tepeyólotl"
+  keywords: "Corazón de la montaña · Eco · Profundidad"
+  description: "El jaguar del interior de la tierra. Período de resonancias profundas, de lo que retumba dentro antes de manifestarse fuera."
+
+T4_Xochitl:
+  inicio: "1 Xochitl"
+  deidad: "Huehuecóyotl"
+  keywords: "Juego · Astucia · Transformación cómica"
+  description: "El coyote viejo. Período de creatividad impredecible, humor y cambio inesperado. La astucia como forma de sabiduría."
+
+T5_Acatl:
+  inicio: "1 Acatl"
+  deidad: "Chalchiuhtlicue"
+  keywords: "Aguas · Pureza · Corriente vital"
+  description: "La señora de las aguas. Período de flujo y purificación. Lo que sostiene la vida en movimiento constante."
+
+T6_Miquiztli:
+  inicio: "1 Miquiztli"
+  deidad: "Tonatiuh"
+  keywords: "Sol · Energía vital · Sacrificio"
+  description: "El sol como fuente de vida que exige para continuar su curso. Período de energía solar intensa y confrontación con lo esencial."
+
+T7_Quiahuitl:
+  inicio: "1 Quiahuitl"
+  deidad: "Tláloc"
+  keywords: "Lluvia · Fertilidad · Destrucción renovadora"
+  description: "El señor de las lluvias. Período de abundancia impredecible. Lo que fertiliza y lo que inunda son la misma fuerza."
+
+T8_Malinalli:
+  inicio: "1 Malinalli"
+  deidad: "Mayahuel"
+  keywords: "Maguey · Embriaguez sagrada · Nutrición"
+  description: "La diosa del maguey. Período de sustento profundo y alteración de la conciencia ordinaria. Lo que nutre también transforma."
+
+T9_Coatl:
+  inicio: "1 Coatl"
+  deidad: "Xiuhtecuhtli"
+  keywords: "Fuego · Centro · Destino"
+  description: "El señor del fuego, emparejado con Tlahuizcalpantecuhtli, la estrella del alba. Período de poder concentrado y destino activo."
+
+T10_Tecpatl:
+  inicio: "1 Tecpatl"
+  deidad: "Mictlantecuhtli"
+  keywords: "Muerte · Inframundo · Paso inevitable"
+  description: "El señor del Mictlán. Período de tránsito y confrontación con lo que termina. La muerte como proceso, no como fin."
+
+T11_Ozomatli:
+  inicio: "1 Ozomatli"
+  deidad: "Patécatl"
+  keywords: "Medicina · Sanación · Fermentación"
+  description: "El dios de la medicina y el pulque. Período de curación y transformación química. Lo que fermenta se vuelve otra cosa."
+
+T12_Cuetzpalin:
+  inicio: "1 Cuetzpalin"
+  deidad: "Itztlacoliuhqui"
+  keywords: "Obsidiana curva · Frío · Justicia ciega"
+  description: "El dios de la obsidiana curva, el frío y la helada. Período de lo que no puede verse con claridad, del juicio inflexible y la ceguera necesaria."
+
+T13_Ollin:
+  inicio: "1 Ollin"
+  deidad: "Tlazolteotl"
+  keywords: "Purificación · Deseo · Transformación"
+  description: "La diosa que devora las impurezas, comedora de inmundicia. Período de purificación profunda, de transformación del deseo y la culpa."
+
+T14_Itzcuintli:
+  inicio: "1 Itzcuintli"
+  deidad: "Xipe Totec"
+  keywords: "Renovación · Muda de piel · Fertilidad"
+  description: "El desollado, nuestro señor el desollado. Período de renovación radical. Para que lo nuevo emerja, lo viejo debe desprenderse por completo."
+
+T15_Calli:
+  inicio: "1 Calli"
+  deidad: "Itzpapalotl"
+  keywords: "Mariposa de obsidiana · Umbral · Guerrera"
+  description: "La mariposa de obsidiana, diosa guerrera del destino. Período de protección e interioridad, del umbral entre lo doméstico y lo sagrado."
+
+T16_Cozcacuauhtli:
+  inicio: "1 Cozcacuauhtli"
+  deidad: "Xólotl"
+  keywords: "Guía al inframundo · Rayo · Monstruo sagrado"
+  description: "El perro sin pelo que guía al sol por el inframundo. Período de descenso y acompañamiento en lo más oscuro."
+
+T17_Atl:
+  inicio: "1 Atl"
+  deidad: "Xiuhtecuhtli / Chalchiuhtlicue"
+  keywords: "Agua · Fuego · Purificación por conflicto"
+  description: "Regida por el señor del fuego y la señora de las aguas. Período de purificación a través del conflicto, de la guerra interna entre opuestos."
+
+T18_Ehecatl:
+  inicio: "1 Ehecatl"
+  deidad: "Quetzalcoatl"
+  keywords: "Viento · Aliento · Cambio inconstante"
+  description: "Quetzalcoatl en su advocación de Ehecatl, dios del viento. Período de fuerzas inconstantes y vanas, de lo que cambia sin previo aviso."
+
+T19_Cuauhtli:
+  inicio: "1 Cuauhtli"
+  deidad: "Xipe Totec"
+  keywords: "Águila · Renovación · Guerra florida"
+  description: "El desollado en su aspecto guerrero, emparejado con el señor del fuego. Período de renovación a través del sacrificio y la lucha."
+
+T20_Tochtli:
+  inicio: "1 Tochtli"
+  deidad: "Xiuhtecuhtli / Itztapaltotec"
+  keywords: "Fuego · Cierre del ciclo · Abundancia final"
+  description: "El señor del fuego junto a Itztapaltotec, aspecto de Xipe Totec. Última trecena del ciclo. Período de culminación antes del reinicio."

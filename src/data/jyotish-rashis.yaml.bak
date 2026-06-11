@@ -1,0 +1,77 @@
+# Jyotish - 12 Rashis (signos sidéreos)
+# Fuentes: Brihat Parashara Hora Shastra, Brihat Jataka (Varahamihira)
+# Nota: los Rashis comparten origen con el zodíaco occidental pero operan
+# en el zodíaco sidéreo (referenciado a estrellas fijas, no al equinoccio)
+# Las caracterizaciones reflejan la tradición jyotish clásica
+
+Mesha:
+  es: Aries sidéreo
+  regente: Marte
+  keywords: "Iniciativa · Fuerza directa · Dharma del guerrero"
+  description: "Primer rashi, regido por Marte. Energía que actúa antes de deliberar — valentía y capacidad de apertura de camino."
+
+Vrishabha:
+  es: Tauro sidéreo
+  regente: Venus
+  keywords: "Estabilidad · Belleza material · Paciencia"
+  description: "Rashi de Venus. Acumula con calma, valora la forma y la permanencia. Disfruta lo que el mundo material ofrece."
+
+Mithuna:
+  es: Géminis sidéreo
+  regente: Mercurio
+  keywords: "Dualidad · Intelecto · Comunicación"
+  description: "Rashi de Mercurio. Mente ágil que recoge información de múltiples fuentes y las conecta con facilidad."
+
+Kataka:
+  es: Cáncer sidéreo
+  regente: Luna
+  keywords: "Nutrición · Memoria · Protección"
+  description: "Rashi lunar por excelencia. Profundamente receptivo, retiene todo lo que toca — especialmente lo emocional."
+
+Simha:
+  es: Leo sidéreo
+  regente: Sol
+  keywords: "Autoridad · Dignidad · Poder solar"
+  description: "Rashi solar. Necesita expresarse con plenitud — la autoridad aquí es natural, no conquistada."
+
+Kanya:
+  es: Virgo sidéreo
+  regente: Mercurio
+  keywords: "Discernimiento · Servicio · Pureza"
+  description: "El Mercurio analítico. Distingue con precisión, sirve con meticulosidad, busca la perfección funcional."
+
+Tula:
+  es: Libra sidéreo
+  regente: Venus
+  keywords: "Equilibrio · Dharma social · Relación"
+  description: "Exaltación de Saturno. Busca la justicia como principio ordenador de las relaciones y la sociedad."
+
+Vrischika:
+  es: Escorpio sidéreo
+  regente: Marte
+  keywords: "Transformación · Profundidad · Ocultismo"
+  description: "Marte en su forma profunda. Opera bajo la superficie, transforma radicalmente lo que toca."
+
+Dhanus:
+  es: Sagitario sidéreo
+  regente: Júpiter
+  keywords: "Sabiduría · Dharma · Expansión"
+  description: "Rashi de Júpiter. Busca la verdad más allá de lo inmediato — filosofía, ley y comprensión universal."
+
+Makara:
+  es: Capricornio sidéreo
+  regente: Saturno
+  keywords: "Disciplina · Karma · Estructura"
+  description: "Exaltación de Marte. Saturno construye aquí con la mayor paciencia — legado que atraviesa generaciones."
+
+Kumbha:
+  es: Acuario sidéreo
+  regente: Saturno
+  keywords: "Colectivo · Desapego · Innovación"
+  description: "Saturno en su dimensión social. Sirve al conjunto con desapego, rompe estructuras que ya no funcionan."
+
+Mina:
+  es: Piscis sidéreo
+  regente: Júpiter
+  keywords: "Moksha · Disolución · Compasión universal"
+  description: "Exaltación de Venus. Júpiter en su forma más expansiva — disolución del ego hacia algo mayor que uno mismo."
