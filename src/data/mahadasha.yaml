@@ -1,0 +1,49 @@
+# Mahadasha — Sistema Vimshottari
+# Períodos planetarios según el Brihat Parashara Hora Shastra
+# No describe quién eres — describe qué estás atravesando
+# Registro de estado, no de estructura
+
+Sol:
+  duracion: "6 años"
+  keywords: "Autoridad · Claridad · Propósito central"
+  description: "Período de afirmación del yo. El sol ilumina lo que es esencial y quema lo que estorba. Tiempo de dirección clara, pero también de confrontación con el ego."
+
+Luna:
+  duracion: "10 años"
+  keywords: "Mente · Receptividad · Flujo emocional"
+  description: "Período de la mente y las emociones en primer plano. Alta receptividad, cambios de estado frecuentes. Lo que se siente importa más que lo que se piensa."
+
+Marte:
+  duracion: "7 años"
+  keywords: "Acción · Energía · Conflicto productivo"
+  description: "Período de energía intensa y acción directa. Impulso hacia adelante, a veces sin freno. El conflicto puede ser productivo si se canaliza."
+
+Rahu:
+  duracion: "18 años"
+  keywords: "Expansión · Ambición · Lo desconocido"
+  description: "Período de expansión hacia territorios sin mapas. Rahu amplifica todo lo que toca — deseo, ambición, confusión. Transformación a través de lo que no se comprende del todo."
+
+Júpiter:
+  duracion: "16 años"
+  keywords: "Sabiduría · Crecimiento · Dharma"
+  description: "Período de expansión a través del conocimiento y el dharma. Crecimiento sostenido, generosidad, sentido. Uno de los períodos más favorables del ciclo."
+
+Saturno:
+  duracion: "19 años"
+  keywords: "Disciplina · Karma · Construcción lenta"
+  description: "El período más largo. Saturno no da atajos — exige trabajo, paciencia y responsabilidad. Lo que se construye aquí dura. Lo que no tiene base, cae."
+
+Mercurio:
+  duracion: "17 años"
+  keywords: "Intelecto · Comunicación · Adaptación"
+  description: "Período de actividad mental intensa. Comunicación, aprendizaje, adaptación. La mente busca conexiones. Buenos períodos para el estudio, la escritura, el comercio."
+
+Ketu:
+  duracion: "7 años"
+  keywords: "Renuncia · Espiritualidad · Soltar"
+  description: "Período de desapego y vuelta hacia adentro. Ketu disuelve lo que ya cumplió su función. Puede sentirse como pérdida, pero señala hacia lo que es realmente esencial."
+
+Venus:
+  duracion: "20 años"
+  keywords: "Placer · Relaciones · Abundancia"
+  description: "El período más largo y uno de los más fructíferos cuando Venus está bien colocado. Tiempo de relaciones, belleza, placer y abundancia material."

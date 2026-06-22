@@ -104,6 +104,51 @@
   .error-msg{color:#e24b4a;font-size:11px;padding:0.5rem;border:1px solid #e24b4a;margin-bottom:1rem;display:none;}
   @media(max-width:900px){.grid,.synthesis-body{grid-template-columns:repeat(2,1fr);}}
   @media(max-width:500px){.grid,.synthesis-body{grid-template-columns:1fr;}header{flex-direction:column;gap:0.5rem;}}
+
+
+  /* ─── GUÍA DE LECTURA ───────────────────────────────────────────────────── */
+  .guia-btn-bar{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+  .guia-btn{background:var(--amber-faint);border:1px solid var(--amber-dim);color:var(--amber);font-family:var(--mono);font-size:10px;padding:4px 14px;cursor:pointer;letter-spacing:0.12em;text-transform:uppercase;transition:all 0.2s;}
+  .guia-btn:hover{background:var(--amber-dim);color:var(--amber-bright);border-color:var(--amber);}
+  .guia-btn.active{background:var(--amber-dim);color:var(--amber-bright);border-color:var(--amber);}
+
+  /* Barra botones de sistema (junto al botón ocultar guía) */
+  .guia-nav{display:none;gap:6px;align-items:center;}
+  .guia-nav.visible{display:flex;}
+  .guia-nav-btn{background:var(--bg3);border:1px solid var(--border-bright);color:var(--text-dim);font-family:var(--mono);font-size:10px;padding:4px 12px;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.15s;white-space:nowrap;}
+  .guia-nav-btn:hover{border-color:var(--amber-dim);color:var(--text-bright);}
+  .guia-nav-btn.active{background:var(--amber-faint);color:var(--amber-bright);border-color:var(--amber);}
+
+  /* Grid en modo guía: oculta el grid de datos, muestra el de andamiaje */
+  .grid.guia-mode{display:none;}
+  .guia-grid{display:none;grid-template-columns:repeat(4,1fr);gap:0;background:transparent;border:1px solid var(--border-bright);position:relative;}
+  .guia-grid.visible{display:grid;}
+
+  /* Columnas del andamiaje */
+  .g-col{background:var(--bg2);display:flex;flex-direction:column;padding:1.25rem 1.5rem;}
+  .g-col.g-col-warn{background:var(--bg3);justify-content:flex-start;border-right:1px solid var(--border-bright);}
+  .g-icon{margin-bottom:1rem;opacity:0.85;}
+  .g-system-label{font-size:9px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:4px;}
+  .g-system-title{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:600;color:var(--amber-bright);letter-spacing:0.05em;margin-bottom:2px;}
+  .g-system-origin{font-size:10px;color:var(--text-dim);margin-bottom:1.25rem;}
+  .g-warning{font-size:11px;color:var(--text-dim);line-height:1.7;padding:0.75rem;border-left:2px solid var(--amber-dim);background:var(--amber-faint);font-style:italic;}
+  .g-entry{margin-bottom:1.25rem;}
+  .g-entry:last-child{margin-bottom:0;}
+  .g-entry-label{font-size:9px;letter-spacing:0.18em;color:var(--amber);text-transform:uppercase;margin-bottom:5px;}
+  .g-funcion{font-size:11px;color:var(--text-dim);line-height:1.65;margin-bottom:8px;}
+  .g-pregunta{font-size:12px;color:var(--text-bright);line-height:1.5;padding:7px 10px;border-left:2px solid var(--amber);background:var(--bg3);}
+  .g-nota{font-size:10px;color:var(--text-dim);line-height:1.65;padding:7px 10px;border-left:2px solid var(--border-bright);background:var(--bg3);font-style:italic;}
+  @media(max-width:900px){.guia-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:500px){.guia-grid{grid-template-columns:1fr;}}
+
+  /* ─── ADVERTENCIA GLOBAL GUÍA ───────────────────────────────────────────── */
+  .guia-aviso{position:absolute;inset:0;background:var(--bg2);z-index:10;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:1rem 2.5rem 1.5rem;text-align:center;border:1px solid var(--border-bright);}
+  .guia-aviso-icon{margin-top:0;margin-bottom:0.75rem;opacity:0.6;flex-shrink:0;}
+  .guia-aviso-title{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:600;color:var(--amber-bright);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1rem;flex-shrink:0;}
+  .guia-aviso-text{font-size:12px;color:var(--text-dim);line-height:1.8;max-width:560px;margin-bottom:0.75rem;}
+  .guia-aviso-text em{color:var(--amber);font-style:normal;}
+  .guia-aviso-btn{background:var(--amber-faint);border:1px solid var(--amber);color:var(--amber-bright);font-family:var(--mono);font-size:11px;padding:7px 24px;cursor:pointer;letter-spacing:0.12em;text-transform:uppercase;transition:all 0.2s;}
+  .guia-aviso-btn:hover{background:var(--amber-dim);}
 </style>
 </head>
 <body>
@@ -160,7 +205,273 @@
     <button class="calc-btn" onclick="calculate()">▶ CALCULAR</button>
   </div>
 
-  <div class="grid">
+  <!-- GUÍA DE LECTURA: botón, barra de navegación, grid de andamiaje -->
+  <div class="guia-btn-bar">
+    <div class="guia-nav" id="guia-nav">
+      <button class="guia-nav-btn active" id="gnav-tonal"   onclick="showSistema('tonal')">Tonalpohualli</button>
+      <button class="guia-nav-btn"        id="gnav-tzolkin" onclick="showSistema('tzolkin')">Tzolkin</button>
+      <button class="guia-nav-btn"        id="gnav-natal"   onclick="showSistema('natal')">Carta Natal</button>
+      <button class="guia-nav-btn"        id="gnav-jyotish" onclick="showSistema('jyotish')">Jyotish</button>
+    </div>
+    <button class="guia-btn" id="guia-btn" onclick="toggleGuia()">◈ GUÍA DE LECTURA</button>
+    <button class="guia-btn" id="copiar-btn" onclick="copiarContexto()" title="Copiar datos y referencia simbólica al portapapeles">⊙ COPIAR CONTEXTO</button>
+  </div>
+
+
+  <!-- Grid de andamiaje (sustituye al grid de datos en estado 2) -->
+  <div class="guia-grid" id="guia-grid">
+
+  <!-- Advertencia global: visible una vez por sesión -->
+  <div class="guia-aviso" id="guia-aviso" style="display:none;">
+    <div class="guia-aviso-icon">
+      <svg width="48" height="48" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="0" cy="0" r="22" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+        <line x1="0" y1="-12" x2="0" y2="4" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="0" cy="10" r="1.8" fill="#f0a020"/>
+      </svg>
+    </div>
+    <div class="guia-aviso-title">Nota sobre esta guía</div>
+    <div class="guia-aviso-text">
+      Esta guía ofrece una <em>aproximación</em> a lo que cada posición significa dentro de su sistema —
+      del mismo modo que conocer los valores de referencia de una analítica te da una visión general de tu estado de salud.<br><br>
+      Una analítica sin contextualización médica es orientación, no diagnóstico. Esta guía sin un <em>tonalpouhqui</em>,
+      un <em>ajq'ij</em>, un <em>jyotishi</em> o un <em>astrólogo</em> con formación es lo mismo:
+      un punto de partida, no una interpretación.<br><br>
+      Los sabios de cada tradición aportan contexto, linaje y lectura que ninguna herramienta puede sustituir.
+    </div>
+    <button class="guia-aviso-btn" onclick="cerrarAviso()">Entendido &middot; Ver la guía</button>
+  </div>
+
+
+    <!-- ══ CARTA NATAL ══════════════════════════════════════════════════════ -->
+    <div class="g-sistema" id="gsistema-natal" style="display:contents">
+
+      <!-- col 1: cabecera + advertencia -->
+      <div class="g-col g-col-warn">
+        <div class="g-system-label">Helenística · Tropical</div>
+        <div class="g-system-title">CARTA NATAL</div>
+        <div class="g-system-origin">Zodíaco tropical · Placidus</div>
+
+        <div class="g-icon"><svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="0" cy="0" r="22" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <circle cx="0" cy="0" r="14" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+            <circle cx="0" cy="0" r="6" fill="none" stroke="#4a3510" stroke-width="0.75"/>
+            <line x1="-22" y1="0" x2="22" y2="0" stroke="#d4860a" stroke-width="1"/>
+            <line x1="0" y1="-22" x2="0" y2="22" stroke="#7a4d08" stroke-width="0.75"/>
+            <line x1="-16" y1="-16" x2="16" y2="16" stroke="#4a3510" stroke-width="0.5"/>
+            <line x1="16" y1="-16" x2="-16" y2="16" stroke="#4a3510" stroke-width="0.5"/>
+            <line x1="-22" y1="0" x2="-26" y2="0" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="2" fill="#f0a020"/>
+          </svg></div>        <div class="g-warning">Este sistema sitúa al individuo en el centro. Cada posición describe una faceta del yo — una pregunta que la tradición helenística considera parte de la arquitectura de una persona.</div>
+      </div>
+
+      <!-- col 2: Sol + Luna -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">SOL · Identidad central</div>
+          <div class="g-funcion">El Sol señala el principio organizador de la personalidad — lo que, cuando funciona, te hace reconocible para ti mismo. No lo que muestras, sino lo que eres cuando no estás actuando para nadie.</div>
+          <div class="g-pregunta">¿Cuándo te reconoces como auténtico?</div>
+        </div>
+        <div class="g-entry">
+          <div class="g-entry-label">LUNA · Mundo emocional</div>
+          <div class="g-funcion">La Luna señala lo que te nutre y lo que te perturba. El sustrato afectivo que opera por debajo de la identidad solar — lo que necesitas para sostenerte, no para brillar.</div>
+          <div class="g-pregunta">¿Qué necesitas para no vaciarte?</div>
+        </div>
+      </div>
+
+      <!-- col 3: Ascendente -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">ASCENDENTE · La presencia</div>
+          <div class="g-funcion">El Ascendente es el punto de contacto entre tú y el mundo — cómo llegas a los lugares antes de que nadie sepa quién eres. No es una máscara falsa: es la forma genuina que toma tu energía al entrar en contacto con lo externo.</div>
+          <div class="g-pregunta">¿Cómo llegas antes de hablar?</div>
+        </div>
+      </div>
+
+      <!-- col 4: Medio Cielo -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">MEDIO CIELO · La dirección</div>
+          <div class="g-funcion">El MC señala la cara que el mundo recibe de ti cuando estás en tu función — vocación, lugar que ocupas en lo colectivo, la huella que construyes. No es lo que eres por dentro: es lo que construyes hacia fuera.</div>
+          <div class="g-pregunta">¿Qué estás construyendo hacia fuera?</div>
+        </div>
+      </div>
+
+    </div><!-- /gsistema-natal -->
+
+    <!-- ══ JYOTISH ════════════════════════════════════════════════════════════ -->
+    <div class="g-sistema" id="gsistema-jyotish" style="display:none">
+
+      <!-- col 1: cabecera + advertencia -->
+      <div class="g-col g-col-warn">
+        <div class="g-system-label">Védica · Sidérea</div>
+        <div class="g-system-title">JYOTISH</div>
+        <div class="g-system-origin">Ayanamsa Lahiri · 23°26'</div>
+
+        <div class="g-icon"><svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="0" cy="0" r="22" fill="none" stroke="#1a1005" stroke-width="1"/>
+            <rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#4a3510" stroke-width="0.75"/>
+            <polygon points="0,-20 17,10 -17,10" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <polygon points="0,20 17,-10 -17,-10" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <polygon points="0,-10 9,5 -9,5" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+            <polygon points="0,10 9,-5 -9,-5" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+            <circle cx="0" cy="0" r="4" fill="none" stroke="#f0a020" stroke-width="0.75"/>
+            <circle cx="0" cy="0" r="2" fill="#f0a020"/>
+          </svg></div>        <div class="g-warning">Este sistema sitúa al individuo como actor dentro de una obra que no escribió. Las fuerzas que gobiernan cada etapa de la vida operan con independencia de la voluntad. Las preguntas no preguntan qué quieres — preguntan cómo te mueves dentro de lo que hay.</div>
+      </div>
+
+      <!-- col 2: Lagna -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">LAGNA · El yo en acción</div>
+          <div class="g-funcion">El Lagna es el punto de referencia de toda la carta védica — el yo que se manifiesta en el mundo, el cuerpo que actúa, la forma en que la vida se despliega hacia fuera. Los textos clásicos lo consideran el elemento más importante de la carta, por encima del Sol.</div>
+          <div class="g-pregunta">¿Cómo actúas cuando te sientes genuino?</div>
+        </div>
+      </div>
+
+      <!-- col 3: Luna + Nakshatra -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">LUNA · La mente</div>
+          <div class="g-funcion">En Jyotish la Luna no es el sustrato emocional — es la mente misma, el instrumento que percibe y procesa. Refleja sin luz propia. Su calidad determina cómo el individuo recibe y filtra la experiencia.</div>
+          <div class="g-pregunta">¿Qué tipo de mente tienes cuando está en calma?</div>
+        </div>
+        <div class="g-entry">
+          <div class="g-entry-label">NAKSHATRA · El carácter profundo</div>
+          <div class="g-funcion">La nakshatra donde cae la Luna revela el carácter con una granularidad que el rashi no alcanza. Es la mansión donde la mente habita — con sus propias deidades, sus propios ritmos, sus propias inclinaciones específicas.</div>
+          <div class="g-pregunta">¿Qué patrones repites una y otra vez?</div>
+        </div>
+      </div>
+
+      <!-- col 4: Mahadasha -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">MAHADASHA · Estación vital</div>
+          <div class="g-funcion">La Mahadasha no describe quién eres — describe en qué tramo del recorrido estás. Es el período planetario activo según el sistema Vimshottari: una energía que gobierna esta etapa de la vida, independientemente de tu voluntad.</div>
+          <div class="g-nota">Este es un registro de estado, no de estructura. Hay cortes que muestran la arquitectura permanente — esos llevan pregunta. Y hay lecturas que muestran la actividad en el momento del escaneo — esas describen el proceso, no el cuerpo. La Mahadasha es lo segundo: no dice quién eres, dice qué estás atravesando. Cambiará.</div>
+        </div>
+      </div>
+
+    </div><!-- /gsistema-jyotish -->
+
+    <!-- ══ TONALPOHUALLI ══════════════════════════════════════════════════════ -->
+    <div class="g-sistema" id="gsistema-tonal" style="display:none">
+
+      <!-- col 1: cabecera + advertencia -->
+      <div class="g-col g-col-warn">
+        <div class="g-system-label">Mexica · 260 días</div>
+        <div class="g-system-title">TONALPOHUALLI</div>
+        <div class="g-system-origin">Nahuatl · Valle de México</div>
+
+        <div class="g-icon"><svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M-5,-8 L-8,-22 L8,-22 L5,-8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M-8,-22 C-10,-26 -8,-30 -4,-28 C-2,-24 -6,-22 -8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M8,-22 C10,-26 8,-30 4,-28 C2,-24 6,-22 8,-22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M8,-5 L22,-8 L22,8 L8,5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M22,-8 C26,-10 30,-8 28,-4 C24,-2 22,-6 22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M22,8 C26,10 30,8 28,4 C24,2 22,6 22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M5,8 L8,22 L-8,22 L-5,8 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M8,22 C10,26 8,30 4,28 C2,24 6,22 8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M-8,22 C-10,26 -8,30 -4,28 C-2,24 -6,22 -8,22" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M-8,5 L-22,8 L-22,-8 L-8,-5 Z" fill="none" stroke="#d4860a" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M-22,8 C-26,10 -30,8 -28,4 C-24,2 -22,6 -22,8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <path d="M-22,-8 C-26,-10 -30,-8 -28,-4 C-24,-2 -22,-6 -22,-8" fill="none" stroke="#f0a020" stroke-width="1" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="6" fill="none" stroke="#f0a020" stroke-width="1.2"/>
+            <circle cx="0" cy="0" r="2.5" fill="#f0a020"/>
+            <circle cx="0" cy="0" r="4" fill="none" stroke="#7a4d08" stroke-width="0.75"/>
+          </svg></div>        <div class="g-warning">Este sistema no sitúa al individuo en el centro — lo sitúa como confluencia de fuerzas que lo preceden y lo atraviesan. Las tres fuerzas-alma nahuas no son tuyas: son fuerzas cósmicas que te fueron dadas al nacer. Las preguntas no preguntan quién eres — preguntan qué recibiste y cómo lo portas.</div>
+      </div>
+
+      <!-- col 2: Signo del día -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">SIGNO DEL DÍA · Tonalli</div>
+          <div class="g-funcion">El signo del día determina el tonalli — la fuerza-alma ubicada en la cabeza, que provee el carácter, el vigor y la energía para el desarrollo. No es una identidad construida: es una dotación recibida en el momento del nacimiento. El tonalpouhqui no decía "eres así" — decía "con esto fuiste provisto".</div>
+          <div class="g-pregunta">¿Qué fuerza reconoces que opera en ti sin que la hayas elegido?</div>
+        </div>
+      </div>
+
+      <!-- col 3: Número -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">NÚMERO · La madurez del ciclo</div>
+          <div class="g-funcion">El número (del 1 al 13) no cambia el signo del día, pero determina el estado en que su energía se expresa dentro de la trecena. Un mismo signo en el número 1 y en el número 13 porta la misma fuerza en momentos radicalmente distintos del ciclo — inicio puro o saturación completa.</div>
+          <div class="g-pregunta">¿En qué momento del ciclo sientes que estás?</div>
+        </div>
+      </div>
+
+      <!-- col 4: Trecena -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">TRECENA · El contexto</div>
+          <div class="g-funcion">La Trecena es el período de 13 días en que caíste. No es una dotación personal — es el clima colectivo que rodeó tu llegada. La deidad que lo preside colorea el entorno en que tu energía del signo del día se despliega.</div>
+          <div class="g-pregunta">¿En qué contexto se desarrolla tu energía?</div>
+        </div>
+
+        <div class="g-entry" style="margin-top:1rem;">
+          <div class="g-entry-label">SEÑOR DE LA NOCHE · El impulso instintivo</div>
+          <div class="g-funcion">Los nueve Señores de la Noche gobiernan un ciclo independiente de 9 que corre en paralelo al de 260. La deidad que corresponde al día de nacimiento imprime su carácter sobre la vida — el impulso que precede a la razón, el aliento más oscuro y más propio.</div>
+          <div class="g-pregunta">¿Qué impulso en ti precede a la razón?</div>
+        </div>
+      </div>
+
+    </div><!-- /gsistema-tonal -->
+
+    <!-- ══ TZOLKIN ════════════════════════════════════════════════════════════ -->
+    <div class="g-sistema" id="gsistema-tzolkin" style="display:none">
+
+      <!-- col 1: cabecera + advertencia -->
+      <div class="g-col g-col-warn">
+        <div class="g-system-label">Maya · 260 días</div>
+        <div class="g-system-title">TZOLKIN</div>
+        <div class="g-system-origin">Correlación GMT · Tradición viva</div>
+
+        <div class="g-icon"><svg width="44" height="44" viewBox="-24 -24 48 48" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0,-22 16,-16 22,0 16,16 0,22 -16,16 -22,0 -16,-16" fill="none" stroke="#d4860a" stroke-width="1.2"/>
+            <polygon points="0,-11 11,0 0,11 -11,0" fill="none" stroke="#d4860a" stroke-width="1"/>
+            <line x1="0" y1="-22" x2="0" y2="22" stroke="#f0a020" stroke-width="0.75" stroke-dasharray="2,3"/>
+            <line x1="-22" y1="0" x2="22" y2="0" stroke="#7a4d08" stroke-width="0.5" stroke-dasharray="2,4"/>
+            <line x1="-2" y1="-22" x2="2" y2="-22" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+            <line x1="-2" y1="22" x2="2" y2="22" stroke="#f0a020" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="3" fill="none" stroke="#f0a020" stroke-width="1"/>
+            <circle cx="0" cy="0" r="1" fill="#f0a020"/>
+          </svg></div>        <div class="g-warning">Este sistema no parte al individuo en facetas. Lo coloca como un nudo en un hilo que viene de antes y sigue después. El nawal no es algo que tienes — es la energía de la corriente en que entraste al primer aliento. Nota: nawal y tono forman una unidad inseparable — su separación aquí es analítica, para facilitar la lectura de cada dimensión.</div>
+      </div>
+
+      <!-- col 2: Nawal -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">NAWAL · Energía del primer aliento</div>
+          <div class="g-funcion">El nawal es la energía cósmica que el recién nacido recibe en el primer aliento — no una identidad, sino una corriente en la que entra. Los ajq'ijab de la tradición k'iche' viva no dicen "eres B'atz" — dicen "naciste en B'atz", con toda la diferencia que hay entre ser algo y entrar en algo.</div>
+          <div class="g-pregunta">¿Qué hilo continúas?</div>
+        </div>
+      </div>
+
+      <!-- col 3: Tono -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">TONO · El modo</div>
+          <div class="g-funcion">El tono (número del 1 al 13) no modifica el nawal — modifica el modo en que esa energía se expresa. Cada tono tiene sus propias deidades y su propio peso ritual. El mismo nawal en tono 1 está en su inicio más puro; en tono 13, en su saturación máxima. El tono no es solo un dial de intensidad: es una dimensión con carácter propio.</div>
+          <div class="g-pregunta">¿Con qué intensidad portas lo que traes?</div>
+        </div>
+      </div>
+
+      <!-- col 4: Trecena -->
+      <div class="g-col">
+        <div class="g-entry">
+          <div class="g-entry-label">TRECENA · Las fuerzas del período</div>
+          <div class="g-funcion">La Trecena es el período de 13 días que da tema y dirección al kin. No es una dotación personal ni un clima de llegada — es una entidad energética con cabeza propia cuya fuerza regula y colorea cómo se expresa tu nawal dentro de ese ciclo.</div>
+          <div class="g-pregunta">¿Qué fuerzas regulan tu energía?</div>
+        </div>
+      </div>
+
+    </div><!-- /gsistema-tzolkin -->
+
+  </div><!-- /guia-grid -->
+
+
+
+    <div class="grid" id="main-grid">
 
     <!-- TONALPOHUALLI -->
     <div class="column">
@@ -388,6 +699,7 @@
   </div>
 
 
+
   <!-- SYMBOLIC DATA - DESPLEGABLE -->
   <div class="symbolic-section" id="sym-section">
     <div class="symbolic-header" onclick="toggleSymbolic()">
@@ -501,6 +813,15 @@
             <div class="sym-keywords" id="sym-n-moon-kw">—</div>
             <div class="sym-desc" id="sym-n-moon-desc">—</div>
           </div>
+
+          <div class="sym-entry">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-n-mc-name">—</span>
+              <span class="sym-system">Medio Cielo</span>
+            </div>
+            <div class="sym-keywords" id="sym-n-mc-kw">—</div>
+            <div class="sym-desc" id="sym-n-mc-desc">—</div>
+          </div>
         </div>
 
         <!-- JYOTISH -->
@@ -523,6 +844,15 @@
             </div>
             <div class="sym-keywords" id="sym-j-nk-kw">—</div>
             <div class="sym-desc" id="sym-j-nk-desc">—</div>
+          </div>
+
+          <div class="sym-entry">
+            <div class="sym-entry-header">
+              <span class="sym-name" id="sym-j-maha-name">—</span>
+              <span class="sym-system">Mahadasha</span>
+            </div>
+            <div class="sym-keywords" id="sym-j-maha-kw">—</div>
+            <div class="sym-desc" id="sym-j-maha-desc">—</div>
           </div>
         </div>
 
@@ -864,10 +1194,11 @@ async function calculate(){
 
   const coords=await getCoords(city, country);
 
-  // Reset error style
-  document.getElementById('error-msg').style.background='';
-  document.getElementById('error-msg').style.color='';
-  document.getElementById('error-msg').style.borderColor='';
+  // Reset loader style always before showing result or error
+  errEl.style.background='';
+  errEl.style.color='';
+  errEl.style.borderColor='';
+  errEl.style.display='none';
 
   if(!coords){
     showError(`Ciudad no encontrada: "${city}". Verifica el nombre e inténtalo de nuevo.`);
@@ -969,6 +1300,7 @@ async function calculate(){
   });
 
   // NAKSHATRA + DASHA
+  let mahadasha = { lord: null };
   if(moonLonTrop!==null){
     const moonSid=normLon(moonLonTrop-ay);
     const dashaData=calcDashas(moonSid,birthYear);
@@ -977,10 +1309,13 @@ async function calculate(){
     set('j-nakshatra-sub',`Señor: ${nk.lord}`);
 
     symNkName=nk.name;
+    const now=new Date().getFullYear()+(new Date().getMonth()/12);
+    const activeDasha=dashaData.timeline.find(d=>now>=d.start&&now<d.end);
+    mahadasha={ lord: activeDasha ? activeDasha.lord : nk.lord };
+
     const dashaList=document.getElementById('j-dasha-list');
     if(dashaList){
       dashaList.innerHTML='';
-      const now=new Date().getFullYear()+(new Date().getMonth()/12);
       dashaData.timeline.forEach(d=>{
         const isActive=now>=d.start&&now<d.end;
         const isPast=now>=d.end;
@@ -1010,9 +1345,9 @@ async function calculate(){
   updateSymbolic(
     {sign: t.sign.n, trecena: t.trecenaSign.n, lord: t.lord, number: t.num},
     {sign: z.sign.m, trecena: z.trecenaSign.m, number: z.num},
-    symSunSign, ang.asc.sign, symMoonSign,
+    symSunSign, ang.asc.sign, symMoonSign, ang.mc.sign,
     lagnaMap[jAsc.sign] || jAsc.sign,
-    symNkName
+    symNkName, mahadasha.lord
   );
 
   // Wheel drawn on demand when user switches to dial view
@@ -1034,7 +1369,7 @@ function showError(msg){
 
 let SYM = {
   tonal: {}, tzolkin: {}, natal: {}, rashis: {}, nakshatras: {},
-  numeros: {}, lordsnoche: {}
+  numeros: {}, lordsnoche: {}, mahadasha: {}
 };
 
 function parseYAML(text) {
@@ -1068,6 +1403,7 @@ async function loadSymbolicData() {
     { key: 'nakshatras', path: 'src/data/jyotish-nakshatras.yaml' },
     { key: 'numeros',    path: 'src/data/numeros-tonalpohualli.yaml' },
     { key: 'lordsnoche', path: 'src/data/senores-noche.yaml'      },
+    { key: 'mahadasha',  path: 'src/data/mahadasha.yaml'          },
   ];
   let loaded = 0;
   for (const f of files) {
@@ -1156,11 +1492,24 @@ function loadFallback() {
 // Inicializar al cargar
 loadSymbolicData();
 
-function updateSymbolic(tonal, tzolkin, natalSun, natalAsc, natalMoon, jyotishLagna, nakshatra) {
+function updateSymbolic(tonal, tzolkin, natalSun, natalAsc, natalMoon, natalMC, jyotishLagna, nakshatra, mahadashaPlanet) {
+  // Mapa de normalización: claves que el motor produce → claves en los YAMLs
+  const KEY_MAP = {
+    // SIGNS_TROP (con acento) → YAML natal (sin acento)
+    'Géminis':'Geminis', 'Cáncer':'Cancer',
+    // DASHA_SEQ (inglés) → YAML mahadasha (español)
+    'Sun':'Sol', 'Moon':'Luna', 'Mars':'Marte',
+    'Jupiter':'Júpiter', 'Saturn':'Saturno', 'Mercury':'Mercurio',
+    // NAKSHATRAS con espacio → YAML con guion bajo
+    'Purva Phalguni':'Purva_Phalguni', 'Uttara Phalguni':'Uttara_Phalguni',
+    'Purva Ashadha':'Purva_Ashadha',   'Uttara Ashadha':'Uttara_Ashadha',
+    'Purva Bhadrapada':'Purva_Bhadrapada', 'Uttara Bhadrapada':'Uttara_Bhadrapada'
+  };
   function fill(nameId, kwId, descId, data, key) {
-    const d = data[key];
+    const resolved = KEY_MAP[key] || key;
+    const d = data[resolved] || data[key];
     if (!d) return;
-    if (nameId) set(nameId, key);
+    if (nameId) set(nameId, resolved);
     set(kwId, d.keywords || d.kw || '—');
     set(descId, d.description || d.desc || '—');
   }
@@ -1174,8 +1523,10 @@ function updateSymbolic(tonal, tzolkin, natalSun, natalAsc, natalMoon, jyotishLa
   fill('sym-n-sun-name',     'sym-n-sun-kw',     'sym-n-sun-desc',     SYM.natal,      natalSun);
   fill('sym-n-asc-name',     'sym-n-asc-kw',     'sym-n-asc-desc',     SYM.natal,      natalAsc);
   fill('sym-n-moon-name',    'sym-n-moon-kw',    'sym-n-moon-desc',    SYM.natal,      natalMoon);
+  fill('sym-n-mc-name',      'sym-n-mc-kw',      'sym-n-mc-desc',      SYM.natal,      natalMC);
   fill('sym-j-lagna-name',   'sym-j-lagna-kw',   'sym-j-lagna-desc',   SYM.natal,      jyotishLagna);
   fill('sym-j-nk-name',      'sym-j-nk-kw',      'sym-j-nk-desc',      SYM.nakshatras, nakshatra);
+  fill('sym-j-maha-name',    'sym-j-maha-kw',    'sym-j-maha-desc',    SYM.mahadasha,  mahadashaPlanet);
 }
 
 function updateOffsetFromCountry() {
@@ -1185,6 +1536,198 @@ function updateOffsetFromCountry() {
   const offset = getUTCOffset(country, month);
   const utcField = document.getElementById('inp-utc');
   if (utcField) utcField.value = offset >= 0 ? `+${offset}` : `${offset}`;
+}
+
+
+
+// ─── COPIAR CONTEXTO ──────────────────────────────────────────────────────────
+function copiarContexto() {
+  const g = id => { const el = document.getElementById(id); return el ? el.textContent.trim() : '—'; };
+
+  // ── DATOS CALCULADOS ──
+  const fecha   = g('display-date');
+  const hora    = g('display-time');
+  const lugar   = g('display-place');
+  const lat     = g('hdr-lat');
+  const lon     = g('hdr-lon');
+
+  const tNum    = g('t-number');
+  const tSign   = g('t-sign');
+  const tSignEs = g('t-sign-es');
+  const tTrec   = g('t-trecena');
+  const tTrecD  = g('t-trecena-day');
+  const tLord   = g('t-lord');
+  const tPos    = g('t-pos');
+
+  const zNum    = g('z-number');
+  const zSign   = g('z-sign');
+  const zSignEs = g('z-sign-es');
+  const zTrec   = g('z-trecena');
+  const zTrecD  = g('z-trecena-day');
+  const zLC     = g('z-lc');
+  const zHaab   = g('z-haab');
+  const zPos    = g('z-pos');
+
+  const nAscDeg = g('n-asc-deg'); const nAscSign = g('n-asc-sign');
+  const nMcDeg  = g('n-mc-deg');  const nMcSign  = g('n-mc-sign');
+  const nSunDeg = g('n-sun-deg'); const nSunSign = g('n-sun-sign');
+  const nMooD   = g('n-moon-deg');const nMooS    = g('n-moon-sign');
+  const nMerD   = g('n-mer-deg'); const nMerS    = g('n-mer-sign');
+  const nVenD   = g('n-ven-deg'); const nVenS    = g('n-ven-sign');
+  const nMarD   = g('n-mar-deg'); const nMarS    = g('n-mar-sign');
+  const nJupD   = g('n-jup-deg'); const nJupS    = g('n-jup-sign');
+  const nSatD   = g('n-sat-deg'); const nSatS    = g('n-sat-sign');
+
+  const jAscDeg = g('j-asc-deg'); const jAscSign = g('j-asc-sign');
+  const jSunD   = g('j-sun-deg'); const jSunS    = g('j-sun-sign');
+  const jMooD   = g('j-moon-deg');const jMooS    = g('j-moon-sign');
+  const jMerD   = g('j-mer-deg'); const jMerS    = g('j-mer-sign');
+  const jMarD   = g('j-mar-deg'); const jMarS    = g('j-mar-sign');
+  const jJupD   = g('j-jup-deg'); const jJupS    = g('j-jup-sign');
+  const jSatD   = g('j-sat-deg'); const jSatS    = g('j-sat-sign');
+  const jNk     = g('j-nakshatra');
+  const jNkSub  = g('j-nakshatra-sub');
+
+  // Dasha list
+  const dashaRows = Array.from(document.querySelectorAll('#j-dasha-list .dasha-row'))
+    .map(r => {
+      const active = r.classList.contains('dasha-active') ? ' ◀ ACTIVO' : '';
+      return '  ' + r.textContent.trim().replace(/\s+/g,' ') + active;
+    }).join('\n');
+
+  // ── REFERENCIA SIMBÓLICA ──
+  function symEntry(label, nameId, kwId, descId) {
+    const name = g(nameId); const kw = g(kwId); const desc = g(descId);
+    if (name === '—' || !name) return '';
+    return `### ${label}: ${name}\n**${kw}**\n${desc}\n`;
+  }
+
+  const md = `# ASTRO-NAV HUD · Contexto de carta natal
+_Generado por Astro-Nav HUD v0.4_
+
+## Datos de nacimiento
+- **Fecha:** ${fecha}
+- **Hora:** ${hora}
+- **Lugar:** ${lugar} (${lat} · ${lon})
+
+---
+
+## Tonalpohualli (Mexica · 260 días)
+- **Signo del día:** ${tNum} ${tSign} — ${tSignEs}
+- **Trecena:** ${tTrec} · Día ${tTrecD} de 13
+- **Señor de la Noche:** ${tLord}
+- **Posición en ciclo:** Día ${tPos} / 260
+
+## Tzolkin (Maya · 260 días)
+- **Kin:** ${zNum} ${zSign} — ${zSignEs}
+- **Trecena:** ${zTrec} · Día ${zTrecD} de 13
+- **Long Count:** ${zLC}
+- **Haab:** ${zHaab}
+- **Posición en ciclo:** Día ${zPos} / 260
+
+## Carta Natal (Helenística · Tropical · Placidus)
+- **Ascendente:** ${nAscDeg} ${nAscSign}
+- **Medio Cielo:** ${nMcDeg} ${nMcSign}
+- **Sol:** ${nSunDeg} ${nSunSign}
+- **Luna:** ${nMooD} ${nMooS}
+- **Mercurio:** ${nMerD} ${nMerS}
+- **Venus:** ${nVenD} ${nVenS}
+- **Marte:** ${nMarD} ${nMarS}
+- **Júpiter:** ${nJupD} ${nJupS}
+- **Saturno:** ${nSatD} ${nSatS}
+
+## Jyotish (Védica · Sidérea · Ayanamsa Lahiri)
+- **Lagna:** ${jAscDeg} ${jAscSign}
+- **Sol:** ${jSunD} ${jSunS}
+- **Luna:** ${jMooD} ${jMooS}
+- **Mercurio:** ${jMerD} ${jMerS}
+- **Marte:** ${jMarD} ${jMarS}
+- **Júpiter:** ${jJupD} ${jJupS}
+- **Saturno:** ${jSatD} ${jSatS}
+- **Nakshatra lunar:** ${jNk} · ${jNkSub}
+
+### Mahadasha · Vimshottari
+${dashaRows}
+
+---
+
+## Referencia simbólica
+
+### Tonalpohualli
+${symEntry('Signo del día',  'sym-t-sign-name',    'sym-t-sign-kw',    'sym-t-sign-desc')}${symEntry('Trecena',       'sym-t-trecena-name', 'sym-t-trecena-kw', 'sym-t-trecena-desc')}${symEntry('Señor de la Noche', 'sym-t-lord-name', 'sym-t-lord-kw', 'sym-t-lord-desc')}${symEntry('Número',        'sym-t-num-name',     'sym-t-num-kw',     'sym-t-num-desc')}
+### Tzolkin
+${symEntry('Kin',            'sym-z-sign-name',    'sym-z-sign-kw',    'sym-z-sign-desc')}${symEntry('Trecena',       'sym-z-trecena-name', 'sym-z-trecena-kw', 'sym-z-trecena-desc')}${symEntry('Número',        'sym-z-num-name',     'sym-z-num-kw',     'sym-z-num-desc')}
+### Carta Natal
+${symEntry('Sol',            'sym-n-sun-name',     'sym-n-sun-kw',     'sym-n-sun-desc')}${symEntry('Ascendente',    'sym-n-asc-name',     'sym-n-asc-kw',     'sym-n-asc-desc')}${symEntry('Luna',           'sym-n-moon-name',    'sym-n-moon-kw',    'sym-n-moon-desc')}${symEntry('Medio Cielo',   'sym-n-mc-name',      'sym-n-mc-kw',      'sym-n-mc-desc')}
+### Jyotish
+${symEntry('Lagna',          'sym-j-lagna-name',   'sym-j-lagna-kw',   'sym-j-lagna-desc')}${symEntry('Nakshatra',     'sym-j-nk-name',      'sym-j-nk-kw',      'sym-j-nk-desc')}${symEntry('Mahadasha',     'sym-j-maha-name',    'sym-j-maha-kw',    'sym-j-maha-desc')}
+---
+_Astro-Nav HUD v0.4 · astronomy-engine 2.1.19 · correlación GMT · ayanamsa Lahiri_
+_Este documento es orientación, no interpretación. Consulta a los especialistas de cada tradición._`;
+
+  navigator.clipboard.writeText(md).then(() => {
+    const btn = document.getElementById('copiar-btn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ COPIADO';
+    btn.style.borderColor = 'var(--cyan-bright)';
+    btn.style.color = 'var(--cyan-bright)';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2000);
+  }).catch(() => {
+    alert('No se pudo acceder al portapapeles. Usa HTTPS o localhost.');
+  });
+}
+
+// ─── GUÍA DE LECTURA ─────────────────────────────────────────────────────────
+let guiaActive = false;
+let sistemaCurrent = 'tonal';
+
+function toggleGuia() {
+  guiaActive = !guiaActive;
+  const btn = document.getElementById('guia-btn');
+  const nav = document.getElementById('guia-nav');
+  const guiaGrid = document.getElementById('guia-grid');
+  const mainGrid = document.getElementById('main-grid');
+
+  if (guiaActive) {
+    btn.textContent = '◈ OCULTAR GUÍA';
+    btn.classList.add('active');
+    nav.classList.add('visible');
+    guiaGrid.classList.add('visible');
+    mainGrid.classList.add('guia-mode');
+    showSistema(sistemaCurrent);
+    // Mostrar aviso solo si no se ha visto en esta sesión
+    const aviso = document.getElementById('guia-aviso');
+    if (aviso) {
+      aviso.style.display = sessionStorage.getItem('guia-aviso-visto') ? 'none' : 'flex';
+    }
+  } else {
+    btn.textContent = '◈ GUÍA DE LECTURA';
+    btn.classList.remove('active');
+    nav.classList.remove('visible');
+    guiaGrid.classList.remove('visible');
+    mainGrid.classList.remove('guia-mode');
+  }
+}
+
+function cerrarAviso() {
+  const aviso = document.getElementById('guia-aviso');
+  if (aviso) aviso.style.display = 'none';
+  sessionStorage.setItem('guia-aviso-visto', '1');
+}
+
+function showSistema(id) {
+  sistemaCurrent = id;
+  const sistemas = ['natal','jyotish','tonal','tzolkin'];
+  sistemas.forEach(s => {
+    const el = document.getElementById('gsistema-' + s);
+    const btn = document.getElementById('gnav-' + s);
+    if (el) el.style.display = (s === id) ? 'contents' : 'none';
+    if (btn) btn.classList.toggle('active', s === id);
+  });
 }
 
 function toggleSymbolic() {
