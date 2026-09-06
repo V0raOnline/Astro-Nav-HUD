@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASTRO-NAV HUD v0.4</title>
+<title>Astro-Nav HUD — Tonalpohualli, Tzolkin, carta natal y Jyotish en paralelo</title>
+<meta name="description" content="Navegación astrológica comparativa: muestra en paralelo cuatro sistemas —Tonalpohualli mexica, Tzolkin maya, carta natal occidental y Jyotish védico— para una misma fecha, hora y lugar. Muestra sin interpretar.">
 <script src="src/lib/astronomy.browser.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
@@ -25,7 +26,7 @@
   .nav-links{display:flex;gap:1rem;align-items:center;}
   .nav-link{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;border-bottom:1px solid var(--border-bright);padding-bottom:1px;transition:color 0.2s;}
   .nav-link:hover{color:var(--amber-bright);}
-  .system-title{font-family:var(--mono);font-size:22px;color:var(--amber-bright);letter-spacing:0.15em;line-height:1;}
+  .system-title{font-family:var(--mono);font-size:22px;color:var(--amber-bright);letter-spacing:0.15em;line-height:1;font-weight:400;}
   .coords{text-align:right;font-size:11px;color:var(--text-dim);line-height:1.8;}
   .coords span{color:var(--amber);}
   .input-bar{background:var(--bg3);border:1px solid var(--border-bright);padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;}
@@ -160,7 +161,7 @@
     <div>
       <div class="system-id">Sistema de Navegación Astrológica · v0.4</div>
       <div style="display:flex;align-items:baseline;gap:1.5rem">
-        <div class="system-title">ASTRO-NAV HUD</div>
+        <h1 class="system-title">ASTRO-NAV HUD</h1>
         <div class="nav-links">
           <a href="about.html" target="_blank" class="nav-link">Sobre este proyecto</a>
           <a href="overview.html" target="_blank" class="nav-link">Visión general</a>
